@@ -28,6 +28,7 @@ for (const p of providers) {
       native_currency: p.currency,
       model_id: price.model,
       model_name: model.name,
+      model_vendor: model.vendor,
       input_native: price.input,
       output_native: price.output,
       cached_input_native: price.cached_input ?? null,
@@ -49,6 +50,7 @@ const out = {
   generated_at: new Date().toISOString(),
   unit: '1M tokens',
   fx: { usd_cny: config.usd_cny, updated_at: config.fx_updated_at },
+  vendors: config.vendors || [],
   models,
   providers: providers.map(({models, ...p}) => p),
   rows
