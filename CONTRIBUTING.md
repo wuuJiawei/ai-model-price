@@ -25,9 +25,11 @@
 
 规则：
 
+- `website`：中转站访问地址，可使用邀请/推广链接；必须是 `http/https`
 - `currency` 目前只允许 `CNY` / `USD`
 - 所有价格均为 `/1M tokens`
 - `input`、`output` 必须 >= 0
 - `model` 必须存在于 `data/models.json`
+- 模型厂商统一使用 `data/config.json` 中的厂商 ID，目前预置 `OpenAI`、`Anthropic`、`Google`
 - 同一平台不得重复同一模型
 - 修改数据后先执行 `npm run check`
