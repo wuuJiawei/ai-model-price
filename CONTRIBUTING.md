@@ -2,7 +2,7 @@
 
 价格更新尽量只修改一个 `data/providers/*.json` 文件。
 
-## Provider 格式
+## 已有价格 Provider 格式
 
 ```json
 {
@@ -23,13 +23,29 @@
 }
 ```
 
+## 待录入价格 Provider 格式
+
+```json
+{
+  "id": "example-pending",
+  "name": "Example Pending",
+  "website": "https://example.com",
+  "currency": null,
+  "updated_at": "2026-09-10",
+  "source_url": "https://example.com",
+  "status": "pending",
+  "note": "价格正在努力登记中",
+  "models": []
+}
+```
+
 规则：
 
-- `website`：中转站访问地址，可使用邀请/推广链接；必须是 `http/https`
-- `currency` 目前只允许 `CNY` / `USD`
-- 所有价格均为 `/1M tokens`
+- `currency` 已录价平台仅允许 `CNY` / `USD`
+- 所有已录入价格均为 `/1M tokens`
 - `input`、`output` 必须 >= 0
 - `model` 必须存在于 `data/models.json`
-- 模型厂商统一使用 `data/config.json` 中的厂商 ID，目前预置 `OpenAI`、`Anthropic`、`Google`
 - 同一平台不得重复同一模型
+- `pending` 平台允许 `currency: null` 和空 `models`
+- `website`、`source_url` 如填写必须是 `http/https`
 - 修改数据后先执行 `npm run check`

@@ -10,10 +10,17 @@ const currencySelect = $('#currencySelect');
 const sortSelect = $('#sortSelect');
 const body = $('#priceBody');
 const stats = $('#stats');
+const pendingBody = $('#pendingBody');
 const fx = data.fx.usd_cny;
 
 $('#fxText').textContent = `USD/CNY ${fx} · ${data.fx.updated_at}`;
+$('#dataUpdatedAt').textContent = `DATA UPDATED ${data.data_updated_at || '--'}`;
 $('#generatedAt').textContent = `GENERATED ${new Date(data.generated_at).toLocaleString()}`;
+
+const pricedProviders = data.providers.filter(p => p.status !== 'pending');
+const pendingProviders = data.providers.filter(p => p.status === 'pending');
+$('#providerSummary').textContent = ` · ${pricedProviders.length} 家已录价 / ${pendingProviders.length} 家待录价`;
+$('#pendingCount').textContent = `${pendingProviders.length} 家`;
 
 vendorSelect.innerHTML = '<option value="">全部厂商</option>';
 for (const v of data.vendors || []) {
@@ -44,10 +51,21 @@ function native(row, key) {
 function escapeHtml(value) {
   return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 }
-function providerLink(row) {
-  if (!row.website) return '—';
-  const url = escapeHtml(row.website);
-  return `<a class="site-link" href="${url}" target="_blank" rel="noopener noreferrer">访问 ↗</a>`;
+function externalLink(url, label = '访问 ↗') {
+  if (!url) return '—';
+  return `<a class="site-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+}
+
+function renderPending() {
+  const list = [...pendingProviders].sort((a, b) => a.name.localeCompare(b.name));
+  pendingBody.innerHTML = list.map((p, i) => `<tr>
+    <td class="rank">${String(i + 1).padStart(2, '0')}</td>
+    <td><span class="provider">${escapeHtml(p.name)}</span></td>
+    <td>${externalLink(p.website)}</td>
+    <td><span class="pending-state">${escapeHtml(p.note || '价格正在努力登记中')}</span></td>
+    <td>${escapeHtml(p.updated_at)}</td>
+    <td>${externalLink(p.source_url, '来源 ↗')}</td>
+  </tr>`).join('');
 }
 
 function syncModels() {
@@ -119,7 +137,7 @@ function render() {
     return `<tr>
       <td class="rank">${String(rank).padStart(2,'0')}</td>
       <td><span class="provider">${escapeHtml(r.provider_name)}</span><span class="native">${escapeHtml(r.native_currency)}</span></td>
-      <td>${providerLink(r)}</td>
+      <td>${externalLink(r.website)}</td>
       <td class="${r.input_cny===inputMin?'best':''}">${money(r.input_cny)}<span class="native">原价 ${native(r,'input')}</span></td>
       <td class="${r.output_cny===outputMin?'best':''}">${money(r.output_cny)}<span class="native">原价 ${native(r,'output')}</span></td>
       <td class="${r.combined_cny===cheapest?'best':''}">${money(r.combined_cny)}</td>
@@ -132,4 +150,5 @@ function render() {
 
 vendorSelect.addEventListener('change', syncModels);
 [modelSelect,currencySelect,sortSelect].forEach(el => el.addEventListener('change', render));
+renderPending();
 syncModels();

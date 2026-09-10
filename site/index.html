@@ -11,6 +11,7 @@
   <header class="topbar">
     <div class="brand">AI MODEL PRICE</div>
     <div class="top-actions">
+      <span id="dataUpdatedAt">DATA UPDATED --</span>
       <span id="fxText">USD/CNY --</span>
       <a href="https://github.com/wuuJiawei/ai-model-price" target="_blank" rel="noreferrer">GITHUB ↗</a>
     </div>
@@ -19,7 +20,7 @@
   <main>
     <section class="hero">
       <h1>AI API 价格比价</h1>
-      <p>统一到 /1M TOKENS。只展示价格，不替平台背书。</p>
+      <p>统一到 /1M TOKENS。只展示价格，不替平台背书。<span id="providerSummary"></span></p>
     </section>
 
     <section class="controls box">
@@ -64,6 +65,29 @@
         </thead>
         <tbody id="priceBody"></tbody>
       </table>
+    </section>
+
+    <section class="pending-section">
+      <div class="section-head">
+        <h2>待录入价格</h2>
+        <span id="pendingCount"></span>
+      </div>
+      <p class="section-note">以下中转站已经登记，价格正在努力登记中。</p>
+      <div class="table-wrap box">
+        <table class="pending-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>中转站</th>
+              <th>网址</th>
+              <th>价格</th>
+              <th>登记 / 更新日期</th>
+              <th>来源</th>
+            </tr>
+          </thead>
+          <tbody id="pendingBody"></tbody>
+        </table>
+      </div>
     </section>
 
     <footer>

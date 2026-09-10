@@ -1,11 +1,13 @@
 {
   "name": "ai-model-price",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "validate": "node scripts/validate.mjs",
     "build": "node scripts/build.mjs",
-    "check": "npm run validate && npm run build"
+    "check": "npm run validate && npm run build",
+    "cf:dev": "npm run check && npx wrangler pages dev site",
+    "cf:deploy": "npm run check && npx wrangler pages deploy site"
   }
 }

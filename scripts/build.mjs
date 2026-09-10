@@ -14,7 +14,7 @@ const providers = fs.readdirSync(providerDir)
 const rows = [];
 for (const p of providers) {
   const rate = p.currency === 'USD' ? config.usd_cny : 1;
-  for (const price of p.models) {
+  for (const price of p.models || []) {
     const model = modelMap.get(price.model);
     const inputCny = price.input * rate;
     const outputCny = price.output * rate;
@@ -46,17 +46,25 @@ for (const model of models) {
   group.forEach((row, index) => row.rank = index + 1);
 }
 
+const providerMeta = providers.map(({models, ...p}) => ({
+  status: p.status || 'priced',
+  ...p
+}));
+const dates = providerMeta.map(p => p.updated_at).filter(Boolean).sort();
+const dataUpdatedAt = dates.at(-1) || null;
+
 const out = {
   generated_at: new Date().toISOString(),
+  data_updated_at: dataUpdatedAt,
   unit: '1M tokens',
   fx: { usd_cny: config.usd_cny, updated_at: config.fx_updated_at },
   vendors: config.vendors || [],
   models,
-  providers: providers.map(({models, ...p}) => p),
+  providers: providerMeta,
   rows
 };
 
 const outDir = path.join(root, 'site/data');
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'prices.json'), JSON.stringify(out, null, 2) + '\n');
-console.log(`✓ 已生成 site/data/prices.json，共 ${rows.length} 条价格。`);
+console.log(`✓ 已生成 site/data/prices.json，共 ${rows.length} 条价格，${providerMeta.length} 个平台。`);
