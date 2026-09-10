@@ -1,5 +1,10 @@
 {
   "usd_cny": 6.71,
   "fx_updated_at": "2026-09-09",
-  "default_currency": "CNY"
+  "default_currency": "CNY",
+  "vendors": [
+    { "id": "OpenAI", "name": "OpenAI" },
+    { "id": "Anthropic", "name": "Anthropic" },
+    { "id": "Google", "name": "Gemini (Google)" }
+  ]
 }
