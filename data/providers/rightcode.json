@@ -1,11 +1,63 @@
 {
   "id": "rightcode",
   "name": "RightCode",
-  "website": "https://www.rightapi.ai/register?aff=CCSWITCH",
-  "currency": null,
+  "website": "https://www.rightapi.ai/register?aff=87179989",
+  "currency": "USD",
   "updated_at": "2026-09-10",
-  "source_url": "https://github.com/farion1231/cc-switch/blob/main/README_ZH.md",
-  "status": "pending",
-  "note": "价格正在努力登记中",
-  "models": []
+  "source_url": "https://www.rightapi.ai/",
+  "note": "主价格采用上下文 <=272K 档位；更长上下文价格见各模型 long_context 字段",
+  "models": [
+    {
+      "model": "gpt-5.5",
+      "input": 2,
+      "output": 12,
+      "cached_input": 0.2,
+      "cache_create": 0,
+      "long_context": {
+        "input": 4,
+        "output": 18,
+        "cached_input": 0.4,
+        "cache_create": 0
+      }
+    },
+    {
+      "model": "gpt-5.6-sol",
+      "input": 2,
+      "output": 12,
+      "cached_input": 0.2,
+      "cache_create": 2.5,
+      "long_context": {
+        "input": 4,
+        "output": 18,
+        "cached_input": 0.4,
+        "cache_create": 5
+      }
+    },
+    {
+      "model": "gpt-5.6-terra",
+      "input": 0.8,
+      "output": 4.8,
+      "cached_input": 0.08,
+      "cache_create": 1,
+      "long_context": {
+        "input": 1.6,
+        "output": 7.2,
+        "cached_input": 0.16,
+        "cache_create": 2
+      }
+    },
+    {
+      "model": "gpt-6-astra",
+      "input": 4,
+      "output": 20,
+      "cached_input": 0.4,
+      "cache_create": 5,
+      "long_context": {
+        "input": 8,
+        "output": 30,
+        "cached_input": 0.8,
+        "cache_create": 10
+      }
+    }
+  ]
 }
