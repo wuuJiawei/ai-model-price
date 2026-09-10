@@ -2,8 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
+const config = JSON.parse(fs.readFileSync(path.join(root, 'data/config.json'), 'utf8'));
 const models = JSON.parse(fs.readFileSync(path.join(root, 'data/models.json'), 'utf8'));
 const modelIds = new Set(models.map(x => x.id));
+const vendorIds = new Set((config.vendors || []).map(x => x.id));
 const dir = path.join(root, 'data/providers');
 const files = fs.readdirSync(dir).filter(x => x.endsWith('.json')).sort();
 const errors = [];
@@ -12,6 +14,21 @@ const providerIds = new Set();
 function err(file, msg) { errors.push(`${file}: ${msg}`); }
 function isDate(v) { return typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v); }
 function isPrice(v) { return typeof v === 'number' && Number.isFinite(v) && v >= 0; }
+function isHttpUrl(v) {
+  if (v == null) return true;
+  if (typeof v !== 'string') return false;
+  try {
+    const u = new URL(v);
+    return u.protocol === 'http:' || u.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+for (const model of models) {
+  if (!model.id || !model.name) err('data/models.json', '模型 id/name 必填');
+  if (!vendorIds.has(model.vendor)) err('data/models.json', `${model.id}.vendor 未在 config.vendors 中定义: ${model.vendor}`);
+}
 
 for (const file of files) {
   let data;
@@ -22,6 +39,8 @@ for (const file of files) {
   if (providerIds.has(data.id)) err(file, `provider id 重复: ${data.id}`);
   providerIds.add(data.id);
   if (!data.name || typeof data.name !== 'string') err(file, 'name 必填');
+  if (!isHttpUrl(data.website)) err(file, 'website 必须是 http/https URL 或 null');
+  if (!isHttpUrl(data.source_url)) err(file, 'source_url 必须是 http/https URL 或 null');
   if (!['CNY','USD'].includes(data.currency)) err(file, 'currency 仅支持 CNY / USD');
   if (!isDate(data.updated_at)) err(file, 'updated_at 必须为 YYYY-MM-DD');
   if (!Array.isArray(data.models) || data.models.length === 0) err(file, 'models 不能为空');
