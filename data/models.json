@@ -1,0 +1,42 @@
+[
+  {
+    "id": "gpt-6-astra",
+    "name": "GPT-6 Astra",
+    "vendor": "OpenAI",
+    "aliases": [
+      "gpt-6-astra"
+    ]
+  },
+  {
+    "id": "gpt-5.6-sol",
+    "name": "GPT-5.6 Sol",
+    "vendor": "OpenAI",
+    "aliases": [
+      "gpt-5.6-sol"
+    ]
+  },
+  {
+    "id": "gpt-5.6-terra",
+    "name": "GPT-5.6 Terra",
+    "vendor": "OpenAI",
+    "aliases": [
+      "gpt-5.6-terra"
+    ]
+  },
+  {
+    "id": "gpt-5.6-luna",
+    "name": "GPT-5.6 Luna",
+    "vendor": "OpenAI",
+    "aliases": [
+      "gpt-5.6-luna"
+    ]
+  },
+  {
+    "id": "gpt-5.5",
+    "name": "GPT-5.5",
+    "vendor": "OpenAI",
+    "aliases": [
+      "gpt-5.5"
+    ]
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "id": "aicodemirror",
+  "name": "aicodemirror",
+  "website": null,
+  "currency": "CNY",
+  "updated_at": "2026-09-10",
+  "source_url": null,
+  "models": [
+    {
+      "model": "gpt-5.5",
+      "input": 2.5,
+      "output": 15,
+      "cached_input": 0.25,
+      "note": "官方订阅口径"
+    },
+    {
+      "model": "gpt-5.6-sol",
+      "input": 2.5,
+      "output": 15,
+      "cached_input": 0.25,
+      "note": "官方订阅口径"
+    },
+    {
+      "model": "gpt-5.6-terra",
+      "input": 1,
+      "output": 6,
+      "cached_input": 0.1,
+      "note": "官方订阅口径"
+    },
+    {
+      "model": "gpt-6-astra",
+      "input": 5,
+      "output": 25,
+      "cached_input": 0.5,
+      "note": "官方订阅口径"
+    }
+  ]
+}

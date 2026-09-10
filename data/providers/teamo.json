@@ -1,0 +1,40 @@
+{
+  "id": "teamo",
+  "name": "teamo",
+  "website": null,
+  "currency": "USD",
+  "updated_at": "2026-09-10",
+  "source_url": null,
+  "models": [
+    {
+      "model": "gpt-5.5",
+      "input": 0.56,
+      "output": 3.36,
+      "cached_input": 0.056
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "input": 0.122,
+      "output": 0.734,
+      "cached_input": 0.0122
+    },
+    {
+      "model": "gpt-5.6-sol",
+      "input": 0.525,
+      "output": 3.15,
+      "cached_input": 0.0525
+    },
+    {
+      "model": "gpt-5.6-terra",
+      "input": 0.184,
+      "output": 1.1,
+      "cached_input": 0.0184
+    },
+    {
+      "model": "gpt-6-astra",
+      "input": 0.98,
+      "output": 4.9,
+      "cached_input": 0.098
+    }
+  ]
+}

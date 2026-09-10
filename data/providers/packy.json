@@ -1,0 +1,40 @@
+{
+  "id": "packy",
+  "name": "packy",
+  "website": null,
+  "currency": "USD",
+  "updated_at": "2026-09-10",
+  "source_url": null,
+  "models": [
+    {
+      "model": "gpt-5.5",
+      "input": 1.5,
+      "output": 9,
+      "cached_input": 0.15
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "input": 0.05,
+      "output": 0.3,
+      "cached_input": 0.005
+    },
+    {
+      "model": "gpt-5.6-sol",
+      "input": 2.5,
+      "output": 15,
+      "cached_input": 0.25
+    },
+    {
+      "model": "gpt-5.6-terra",
+      "input": 1,
+      "output": 6,
+      "cached_input": 0.1
+    },
+    {
+      "model": "gpt-6-astra",
+      "input": 5,
+      "output": 25,
+      "cached_input": 0.5
+    }
+  ]
+}

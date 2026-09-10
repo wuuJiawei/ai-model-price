@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="开源 AI API 模型价格比价" />
+  <title>AI MODEL PRICE</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">AI MODEL PRICE</div>
+    <div class="top-actions">
+      <span id="fxText">USD/CNY --</span>
+      <a href="https://github.com/wuuJiawei/ai-model-price" target="_blank" rel="noreferrer">GITHUB ↗</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>AI API 价格比价</h1>
+      <p>统一到 /1M TOKENS。只展示价格，不替平台背书。</p>
+    </section>
+
+    <section class="controls box">
+      <label>模型
+        <select id="modelSelect"></select>
+      </label>
+      <label>显示币种
+        <select id="currencySelect">
+          <option value="CNY">CNY ¥</option>
+          <option value="USD">USD $</option>
+        </select>
+      </label>
+      <label>排序
+        <select id="sortSelect">
+          <option value="combined">综合成本</option>
+          <option value="input">输入价格</option>
+          <option value="output">输出价格</option>
+          <option value="name">平台名称</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="stats" id="stats"></section>
+
+    <section class="table-wrap box">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>平台</th>
+            <th>输入 /1M</th>
+            <th>输出 /1M</th>
+            <th>综合</th>
+            <th>缓存读取</th>
+            <th>相对最低</th>
+            <th>更新时间</th>
+          </tr>
+        </thead>
+        <tbody id="priceBody"></tbody>
+      </table>
+    </section>
+
+    <footer>
+      <span>DATA-DRIVEN / OPEN SOURCE / NO DATABASE</span>
+      <span id="generatedAt"></span>
+    </footer>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

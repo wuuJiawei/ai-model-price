@@ -1,0 +1,31 @@
+{
+  "id": "zc",
+  "name": "zc",
+  "website": null,
+  "currency": "USD",
+  "updated_at": "2026-09-10",
+  "source_url": null,
+  "models": [
+    {
+      "model": "gpt-5.5",
+      "input": 1.5,
+      "output": 9,
+      "cached_input": 0.15
+    },
+    {
+      "model": "gpt-5.6-sol",
+      "input": 1.5,
+      "output": 9
+    },
+    {
+      "model": "gpt-5.6-terra",
+      "input": 0.75,
+      "output": 4.5
+    },
+    {
+      "model": "gpt-6-astra",
+      "input": 3,
+      "output": 15
+    }
+  ]
+}
