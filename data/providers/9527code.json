@@ -1,11 +1,44 @@
 {
   "id": "9527code",
   "name": "9527CODE",
-  "website": "https://9527.codes/register?aff=e5zI",
-  "currency": null,
+  "website": "https://9527.codes/",
+  "currency": "USD",
   "updated_at": "2026-09-10",
-  "source_url": "https://github.com/farion1231/cc-switch/blob/main/README_ZH.md",
-  "status": "pending",
-  "note": "价格正在努力登记中",
-  "models": []
+  "source_url": "https://9527.codes/",
+  "models": [
+    {
+      "model": "gpt-5.5",
+      "input": 1.5,
+      "output": 9,
+      "cached_input": 0.15
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "input": 0.6,
+      "output": 3.6,
+      "cached_input": 0.06,
+      "note": "动态计费"
+    },
+    {
+      "model": "gpt-5.6-sol",
+      "input": 1.5,
+      "output": 9,
+      "cached_input": 0.15,
+      "note": "动态计费"
+    },
+    {
+      "model": "gpt-5.6-terra",
+      "input": 0.6,
+      "output": 3.6,
+      "cached_input": 0.06,
+      "note": "动态计费"
+    },
+    {
+      "model": "gpt-6-astra",
+      "input": 3,
+      "output": 15,
+      "cached_input": 0.3,
+      "note": "动态计费"
+    }
+  ]
 }
