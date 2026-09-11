@@ -22,7 +22,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm run check
+      - run: npm install
+      - run: npm run build
       - uses: actions/configure-pages@v5
         with:
           enablement: true

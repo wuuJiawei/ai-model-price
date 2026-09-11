@@ -16,6 +16,7 @@ for (const p of providers) {
   const rate = p.currency === 'USD' ? config.usd_cny : 1;
   for (const price of p.models || []) {
     const model = modelMap.get(price.model);
+    if (!model) continue;
     const inputCny = price.input * rate;
     const outputCny = price.output * rate;
     const cachedCny = price.cached_input == null ? null : price.cached_input * rate;
@@ -64,7 +65,8 @@ const out = {
   rows
 };
 
-const outDir = path.join(root, 'site/data');
+const outDir = path.join(root, '.generated/data');
+fs.rmSync(path.join(root, '.generated'), { recursive: true, force: true });
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'prices.json'), JSON.stringify(out, null, 2) + '\n');
-console.log(`✓ 已生成 site/data/prices.json，共 ${rows.length} 条价格，${providerMeta.length} 个平台。`);
+console.log(`✓ 已生成 .generated/data/prices.json，共 ${rows.length} 条价格，${providerMeta.length} 个平台。`);

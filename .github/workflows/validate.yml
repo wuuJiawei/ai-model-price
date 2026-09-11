@@ -5,7 +5,9 @@ on:
     paths:
       - 'data/**'
       - 'scripts/**'
-      - 'site/**'
+      - 'src/**'
+      - 'index.html'
+      - 'vite.config.js'
       - 'package.json'
   push:
     branches: [main]
@@ -18,4 +20,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm run check
+      - run: npm install
+      - run: npm run build

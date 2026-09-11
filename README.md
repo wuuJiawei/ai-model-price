@@ -10,17 +10,24 @@
 - 自动换算 CNY / USD
 - 自动计算 `1M 输入 + 1M 输出` 综合成本与排名
 - 展示数据更新日期、中转站网址和待录入价格平台
-- GitHub Pages 自动部署
+- React + Vite 前端，交互与动效使用 [beUI](https://beui.dev/) 的组件/交互模式
+- GitHub Pages / Cloudflare Pages 自动部署
 - 已预留 `history/`，后续可增加价格趋势图
 
 ## 本地运行
 
 ```bash
-npm run check
-python3 -m http.server 8080 -d site
+npm install
+npm run dev
 ```
 
-打开 `http://localhost:8080`。
+生产构建：
+
+```bash
+npm run build
+```
+
+输出目录为 `site/`。
 
 ## Cloudflare Pages
 
@@ -29,10 +36,9 @@ python3 -m http.server 8080 -d site
 1. Cloudflare → Workers & Pages → Create application → Pages → Connect to Git。
 2. 选择 `wuuJiawei/ai-model-price`。
 3. Production branch：`main`。
-4. Build command：`npm run check`。
+4. Build command：`npm run build`。
 5. Build output directory：`site`。
-6. 部署成功后会获得一个 `*.pages.dev` 地址。
-7. 在 Pages 项目的 Custom domains 中添加自己的域名或子域名。
+6. 部署成功后在 Custom domains 中添加自己的域名或子域名。
 
 仓库同时提供 `wrangler.jsonc`，也可以使用 Wrangler 部署。
 
@@ -47,14 +53,12 @@ data/providers/<provider>.json
 然后执行：
 
 ```bash
-npm run check
+npm run build
 ```
 
 提交 PR 后 GitHub Actions 会自动校验。
 
 ### 已知平台但价格待录入
-
-可以先登记平台：
 
 ```json
 {
