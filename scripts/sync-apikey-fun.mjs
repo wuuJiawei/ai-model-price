@@ -1,7 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const API_URL = 'https://apikey.fun/api/pricing';
+const API_URLS = [
+  'https://api.apikey.fun/api/pricing',
+  'https://apikey.fun/api/pricing',
+];
 const PRICE_URL = 'https://apikey.fun/pricing';
 const root = process.cwd();
 const providerPath = path.join(root, 'data/providers/apikey-fun.json');
@@ -47,15 +50,10 @@ function pickGroup(vendor, enableGroups, groupRatio) {
     .filter(group => !EXCLUDED_GROUPS.test(group))
     .sort((a, b) => groupRatio.get(a) - groupRatio.get(b));
 
-  // 定价页面向公开用户展示时，优先采用可公开使用的最低倍率分组。
-  // 对明显的会员/订阅/内部/Max 等特殊分组不参与比较，避免把专属价格当公开价。
-  if (publicCandidates.length) return publicCandidates[0];
-  return null;
+  return publicCandidates[0] || null;
 }
 
 function pricingFor(row, groupMultiplier) {
-  // NewAPI /api/pricing：token 计费 model_ratio 以 ¥2 / 1M input 的名义基准计算。
-  // APIKEY.FUN 站内按人民币余额扣费，因此这里保留数值并将 provider.currency 标记为 CNY。
   if (Number(row.quota_type) === 1) return null;
 
   const modelRatio = asNumber(row.model_ratio);
@@ -80,29 +78,42 @@ function sameNumber(a, b) {
   return Math.abs(Number(a) - Number(b)) < 1e-9;
 }
 
-const response = await fetch(API_URL, {
-  redirect: 'follow',
-  headers: {
-    accept: 'application/json,text/plain,*/*',
-    'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
-    'cache-control': 'no-store',
-    referer: PRICE_URL,
-    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36',
-  },
-});
+async function fetchPricingPayload() {
+  const errors = [];
+  for (const apiUrl of API_URLS) {
+    const response = await fetch(apiUrl, {
+      redirect: 'follow',
+      headers: {
+        accept: 'application/json,text/plain,*/*',
+        'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        'cache-control': 'no-store',
+        referer: PRICE_URL,
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36',
+      },
+    });
 
-if (!response.ok) {
-  throw new Error(`APIKEY.FUN pricing fetch failed: HTTP ${response.status}`);
+    if (!response.ok) {
+      errors.push(`${apiUrl} -> HTTP ${response.status}`);
+      continue;
+    }
+
+    const payload = await response.json();
+    if (!payload || payload.success === false || !Array.isArray(payload.data)) {
+      errors.push(`${apiUrl} -> invalid payload`);
+      continue;
+    }
+
+    console.log(`✓ APIKEY.FUN pricing API: ${apiUrl}`);
+    return payload;
+  }
+
+  throw new Error(`APIKEY.FUN pricing API unavailable: ${errors.join('; ')}`);
 }
 
-const payload = await response.json();
-if (!payload || payload.success === false || !Array.isArray(payload.data)) {
-  throw new Error('APIKEY.FUN /api/pricing 返回格式异常，停止更新。');
-}
-
+const payload = await fetchPricingPayload();
 const groupRatio = normalizeGroupRatio(payload.group_ratio);
 if (!groupRatio.size) {
-  throw new Error('APIKEY.FUN /api/pricing 未返回可用 group_ratio，停止更新。');
+  throw new Error('APIKEY.FUN pricing API 未返回可用 group_ratio，停止更新。');
 }
 
 const canonicalModels = JSON.parse(fs.readFileSync(modelsPath, 'utf8'));
@@ -172,7 +183,7 @@ for (const model of canonicalModels) {
 }
 
 if (found === 0) {
-  throw new Error('未从 APIKEY.FUN /api/pricing 匹配到任何目标模型与公开分组，停止更新，避免覆盖错误数据。');
+  throw new Error('未从 APIKEY.FUN pricing API 匹配到任何目标模型与公开分组，停止更新，避免覆盖错误数据。');
 }
 
 provider.currency = 'CNY';
