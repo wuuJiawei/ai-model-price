@@ -124,8 +124,44 @@ async function fetchDashboardPricingBundle() {
 }
 
 function extractNumber(chunk, property) {
-  const match = chunk.match(new RegExp(`${property}:(-?[0-9]+(?:\\.[0-9]+)?)`));
+  const match = chunk.match(new RegExp(`${property}:(-?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?)`));
   return match ? asNumber(match[1]) : null;
+}
+
+function extractObject(bundle, nameIndex) {
+  const start = bundle.lastIndexOf('{', nameIndex);
+  if (start < 0) return null;
+
+  let depth = 0;
+  let quote = null;
+  let escaped = false;
+
+  for (let i = start; i < bundle.length; i += 1) {
+    const char = bundle[i];
+
+    if (quote) {
+      if (escaped) {
+        escaped = false;
+      } else if (char === '\\') {
+        escaped = true;
+      } else if (char === quote) {
+        quote = null;
+      }
+      continue;
+    }
+
+    if (char === '"' || char === "'" || char === '`') {
+      quote = char;
+      continue;
+    }
+    if (char === '{') depth += 1;
+    if (char === '}') {
+      depth -= 1;
+      if (depth === 0) return bundle.slice(start, i + 1);
+    }
+  }
+
+  return null;
 }
 
 function parseBaseModel(bundle, modelId) {
@@ -137,10 +173,8 @@ function parseBaseModel(bundle, modelId) {
     if (index < 0) return null;
     from = index + needle.length;
 
-    // 限定在当前 model object 内，避免 cacheRead/cacheCreate 误读到下一个模型。
-    const nextModel = bundle.indexOf('},{name:"', from);
-    const end = nextModel >= 0 ? nextModel + 1 : Math.min(bundle.length, index + 700);
-    const chunk = bundle.slice(index, end);
+    const chunk = extractObject(bundle, index);
+    if (!chunk) continue;
 
     const input = extractNumber(chunk, 'inputUsd');
     const output = extractNumber(chunk, 'outputUsd');
