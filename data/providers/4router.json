@@ -7,16 +7,100 @@
   "source_url": "https://4router.net/pricing",
   "models": [
     {
-      "model": "claude-haiku-4-5",
-      "input": 1.5,
-      "output": 7.5,
-      "cached_input": 1.5,
-      "note": "自动采集 · ClaudeMax"
+      "model": "gpt-6-astra",
+      "input": 4.5,
+      "output": 22.5,
+      "cached_input": 0.45,
+      "note": "自动采集 · GptPro"
+    },
+    {
+      "model": "gpt-5.6-sol",
+      "input": 1.8,
+      "output": 9,
+      "cached_input": 0.18,
+      "note": "自动采集 · GptPro"
+    },
+    {
+      "model": "gpt-5.6-terra",
+      "input": 0.9,
+      "output": 5.4,
+      "cached_input": 0.09,
+      "note": "自动采集 · GptPro"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "input": 0.09,
+      "output": 0.54,
+      "cached_input": 0.009,
+      "note": "自动采集 · GptPro"
+    },
+    {
+      "model": "gpt-5.5",
+      "input": 2.25,
+      "output": 13.5,
+      "cached_input": 0.225,
+      "note": "自动采集 · GptPro"
+    },
+    {
+      "model": "claude-opus-5",
+      "input": 2.25,
+      "output": 11.25,
+      "cached_input": 0.225,
+      "note": "自动采集 · cheapClaude"
+    },
+    {
+      "model": "claude-fable-5-1",
+      "input": 22,
+      "output": 110,
+      "cached_input": 0.55,
+      "note": "自动采集 · ClaudeApi"
+    },
+    {
+      "model": "claude-fable-5",
+      "input": 22,
+      "output": 110,
+      "cached_input": 2.2,
+      "note": "自动采集 · ClaudeApi"
+    },
+    {
+      "model": "claude-sonnet-5",
+      "input": 0.9,
+      "output": 4.5,
+      "cached_input": 0.09,
+      "note": "自动采集 · cheapClaude"
+    },
+    {
+      "model": "claude-opus-4-8",
+      "input": 2.25,
+      "output": 11.25,
+      "cached_input": 0.225,
+      "note": "自动采集 · cheapClaude"
+    },
+    {
+      "model": "claude-opus-4-7",
+      "input": 2.25,
+      "output": 11.25,
+      "cached_input": 0.225,
+      "note": "自动采集 · cheapClaude"
+    },
+    {
+      "model": "claude-opus-4-6",
+      "input": 2.25,
+      "output": 11.25,
+      "cached_input": 0.225,
+      "note": "自动采集 · cheapClaude"
+    },
+    {
+      "model": "claude-sonnet-4-6",
+      "input": 1.35,
+      "output": 6.75,
+      "cached_input": 0.135,
+      "note": "自动采集 · cheapClaude"
     }
   ],
   "auto_sync": {
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-09-12T14:21:41+08:00"
+  "updated_at_time": "2026-09-12T14:25:11+08:00"
 }
