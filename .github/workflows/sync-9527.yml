@@ -11,6 +11,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: sync-9527-prices
@@ -19,7 +21,9 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,11 +39,13 @@ jobs:
       - name: Validate data
         run: node scripts/validate.mjs
 
-      - name: Commit price changes
+      - name: Commit latest sync snapshot
+        id: commit
         shell: bash
         run: |
           if git diff --quiet -- data/providers/9527code.json; then
-            echo 'No 9527CODE price changes.'
+            echo 'No 9527CODE data changes.'
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -49,3 +55,36 @@ jobs:
           git commit -m 'chore(data): sync 9527CODE prices'
           git pull --rebase
           git push
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        if: steps.commit.outputs.changed == 'true'
+        run: npm install
+
+      - name: Build site with latest 9527 data
+        if: steps.commit.outputs.changed == 'true'
+        run: npm run build
+
+      - name: Configure Pages
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        if: steps.commit.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    if: needs.sync.outputs.changed == 'true'
+    needs: sync
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy latest pricing
+        id: deployment
+        uses: actions/deploy-pages@v4
