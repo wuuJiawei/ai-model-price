@@ -11,8 +11,34 @@ function fmt(v) {
   return v.toFixed(2).replace(/\.00$/,'');
 }
 
+function formatUpdateTime(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  }).format(date).replaceAll('/', '-');
+}
+
+function autoSyncText(interval) {
+  if (interval === 'hourly') return '定期自动抓取 · 每小时同步';
+  if (interval === 'daily') return '定期自动抓取 · 每日同步';
+  return '定期自动抓取';
+}
+
 function ExternalIcon() {
   return <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5h-2v10h10v-2M10 5h5v5M15 5l-7 7" /></svg>;
+}
+
+function RefreshIcon() {
+  return <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M15.5 7A6 6 0 1 0 16 12" /><path d="M15.5 3.5V7h-3.5" /></svg>;
 }
 
 function Pill({ children, tone = 'default' }) {
@@ -80,6 +106,7 @@ export default function App() {
   const bestOutput = rows.find(x => x.output_cny === outputMin);
   const pending = data?.providers.filter(p => p.status === 'pending') || [];
   const fx = data?.fx.usd_cny || 1;
+  const latestTime = formatUpdateTime(data?.data_updated_at_time);
 
   const money = cny => {
     if (cny == null) return '—';
@@ -95,7 +122,9 @@ export default function App() {
       <header className="nav">
         <a className="brand" href="./">AI MODEL PRICE</a>
         <div className="nav-meta">
-          <Pill>更新时间 {data.data_updated_at || '—'}</Pill>
+          <span title={latestTime ? `最近一次价格更新时间：${latestTime}` : undefined}>
+            <Pill>更新时间 {data.data_updated_at || '—'}</Pill>
+          </span>
           <Pill>USD/CNY {fx}</Pill>
           <a className="ghost-link" href={GITHUB} target="_blank" rel="noreferrer">GitHub <ExternalIcon /></a>
         </div>
@@ -165,6 +194,7 @@ export default function App() {
                       {rows.map(r => {
                         const rank = ranked.findIndex(x => x.provider_id === r.provider_id) + 1;
                         const ratio = cheapest ? r.combined_cny / cheapest : 1;
+                        const fullUpdateTime = formatUpdateTime(r.updated_at_time);
                         return (
                           <motion.tr key={`${modelId}-${r.provider_id}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                             <td><span className="rank">{String(rank).padStart(2,'0')}</span></td>
@@ -179,7 +209,16 @@ export default function App() {
                             <td className={r.combined_cny === cheapest ? 'best' : ''}>{money(r.combined_cny)}</td>
                             <td>{r.cached_input_cny == null ? '—' : money(r.cached_input_cny)}</td>
                             <td>{ratio === 1 ? <Pill tone="success">最低价</Pill> : `${ratio.toFixed(2)}×`}</td>
-                            <td>{r.updated_at}</td>
+                            <td>
+                              <div className="update-cell">
+                                {r.auto_sync && (
+                                  <span className="auto-sync-mark" title={autoSyncText(r.auto_sync_interval)}>
+                                    <RefreshIcon />
+                                  </span>
+                                )}
+                                <span title={fullUpdateTime ? `更新时间：${fullUpdateTime}` : undefined}>{r.updated_at}</span>
+                              </div>
+                            </td>
                           </motion.tr>
                         );
                       })}
