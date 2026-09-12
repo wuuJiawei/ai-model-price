@@ -79,7 +79,6 @@ export default function App() {
   const bestInput = rows.find(x => x.input_cny === inputMin);
   const bestOutput = rows.find(x => x.output_cny === outputMin);
   const pending = data?.providers.filter(p => p.status === 'pending') || [];
-  const pricedCount = data?.providers.filter(p => p.status !== 'pending').length || 0;
   const fx = data?.fx.usd_cny || 1;
 
   const money = cny => {
@@ -96,7 +95,7 @@ export default function App() {
       <header className="nav">
         <a className="brand" href="./">AI MODEL PRICE</a>
         <div className="nav-meta">
-          <Pill>更新 {data.data_updated_at || '—'}</Pill>
+          <Pill>更新时间 {data.data_updated_at || '—'}</Pill>
           <Pill>USD/CNY {fx}</Pill>
           <a className="ghost-link" href={GITHUB} target="_blank" rel="noreferrer">GitHub <ExternalIcon /></a>
         </div>
@@ -104,9 +103,7 @@ export default function App() {
 
       <main className="container">
         <section className="hero">
-          <Pill tone="dark">OPEN SOURCE</Pill>
-          <h1>AI 模型价格，<br />放一起比。</h1>
-          <p>统一到 /1M Tokens。只展示价格，不替平台背书。已录价 {pricedCount} 家，待登记 {pending.length} 家。</p>
+          <h1>中转站价格对比</h1>
         </section>
 
         <section className="panel filters">

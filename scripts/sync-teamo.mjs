@@ -11,7 +11,16 @@ const targets = new Map([
   ['GPT-5.6 Sol', 'gpt-5.6-sol'],
   ['GPT-5.6 Terra', 'gpt-5.6-terra'],
   ['GPT-5.6 Luna', 'gpt-5.6-luna'],
-  ['GPT-5.5', 'gpt-5.5']
+  ['GPT-5.5', 'gpt-5.5'],
+  ['Claude Opus 5', 'claude-opus-5'],
+  ['Claude Fable 5.1', 'claude-fable-5-1'],
+  ['Claude Fable 5', 'claude-fable-5'],
+  ['Claude Sonnet 5', 'claude-sonnet-5'],
+  ['Claude Opus 4.8', 'claude-opus-4-8'],
+  ['Claude Opus 4.7', 'claude-opus-4-7'],
+  ['Claude Opus 4.6', 'claude-opus-4-6'],
+  ['Claude Sonnet 4.6', 'claude-sonnet-4-6'],
+  ['Claude Haiku 4.5', 'claude-haiku-4-5']
 ]);
 
 function decodeHtml(html) {
@@ -38,8 +47,8 @@ function parseModel(text, label) {
     if (index < 0) break;
     from = index + label.length;
 
-    const chunk = text.slice(index, index + 700);
-    if (!/Cache/i.test(chunk)) continue;
+    const chunk = text.slice(index, index + 800);
+    if (!/Cache|缓存/i.test(chunk)) continue;
 
     const prices = [...chunk.matchAll(/\$([0-9]+(?:\.[0-9]+)?)/g)]
       .map(match => Number(match[1]));
@@ -102,7 +111,7 @@ for (const [label, modelId] of targets) {
   found += 1;
   const current = modelMap.get(modelId);
   if (!current) {
-    provider.models.push({ model: modelId, ...parsed });
+    provider.models.push({ model: modelId, input: parsed.input, output: parsed.output, cached_input: parsed.cached_input });
     changed = true;
     changes.push(`${modelId}: 新增 ${parsed.input}/${parsed.output}`);
     continue;
