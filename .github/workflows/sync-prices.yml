@@ -1,0 +1,98 @@
+name: sync-relay-prices
+
+on:
+  schedule:
+    - cron: '23 * * * *'
+      timezone: 'Asia/Shanghai'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/sync-teamo.mjs'
+      - 'scripts/sync-9527.mjs'
+      - '.github/workflows/sync-prices.yml'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: sync-relay-prices
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Fetch TeamoRouter pricing
+        id: teamo
+        continue-on-error: true
+        run: node scripts/sync-teamo.mjs
+
+      - name: Fetch 9527CODE pricing
+        id: code9527
+        continue-on-error: true
+        run: node scripts/sync-9527.mjs
+
+      - name: Check sync results
+        shell: bash
+        run: |
+          echo "TeamoRouter: ${{ steps.teamo.outcome }}"
+          echo "9527CODE: ${{ steps.code9527.outcome }}"
+          if [[ "${{ steps.teamo.outcome }}" == "failure" && "${{ steps.code9527.outcome }}" == "failure" ]]; then
+            echo 'Both pricing sync tasks failed.'
+            exit 1
+          fi
+
+      - name: Validate data
+        run: node scripts/validate.mjs
+
+      - name: Commit latest sync snapshot
+        shell: bash
+        run: |
+          if git diff --quiet -- data/providers/teamo.json data/providers/9527code.json; then
+            echo 'No relay pricing data changes.'
+          else
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add data/providers/teamo.json data/providers/9527code.json
+            git commit -m 'chore(data): sync relay prices'
+            git pull --rebase
+            git push
+          fi
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build site with latest pricing
+        run: npm run build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: sync
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy latest pricing
+        id: deployment
+        uses: actions/deploy-pages@v4
