@@ -83,6 +83,12 @@ const requestHeaders = {
   'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36',
 };
 
+function compactSnippet(text, index, before = 500, after = 1200) {
+  return text
+    .slice(Math.max(0, index - before), Math.min(text.length, index + after))
+    .replace(/\s+/g, ' ');
+}
+
 async function inspectPricingPage(errors) {
   const response = await fetch(PRICE_URL, {
     redirect: 'follow',
@@ -94,11 +100,46 @@ async function inspectPricingPage(errors) {
   const scripts = [...html.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map(m => m[1]);
   console.log(`! scripts=${JSON.stringify(scripts.slice(0, 20))}`);
 
-  for (const needle of ['gpt-6', 'gpt-5.6', 'claude-opus', 'pricing', '__NEXT_DATA__', '__NUXT__']) {
-    const index = html.toLowerCase().indexOf(needle.toLowerCase());
-    if (index >= 0) {
-      const snippet = html.slice(Math.max(0, index - 450), Math.min(html.length, index + 1500)).replace(/\s+/g, ' ');
-      console.log(`! html-snippet[${needle}]=${snippet}`);
+  for (const scriptSrc of scripts) {
+    let scriptUrl;
+    try {
+      scriptUrl = new URL(scriptSrc, PRICE_URL);
+    } catch {
+      continue;
+    }
+    if (scriptUrl.origin !== new URL(PRICE_URL).origin) continue;
+
+    const jsResponse = await fetch(scriptUrl, {
+      redirect: 'follow',
+      headers: { ...requestHeaders, accept: '*/*' },
+    });
+    if (!jsResponse.ok) {
+      console.log(`! bundle ${scriptUrl.href} -> HTTP ${jsResponse.status}`);
+      continue;
+    }
+
+    const js = await jsResponse.text();
+    console.log(`! bundle=${scriptUrl.href}, length=${js.length}`);
+
+    const urlMatches = new Set(
+      [...js.matchAll(/(?:https?:\\?\/\\?\/[^"'`\s)]+|["'`]((?:\/?api\/|\/api\/)[^"'`\s)]*))/gi)]
+        .map(match => (match[1] || match[0]).replace(/\\\//g, '/'))
+        .filter(Boolean)
+    );
+    console.log(`! endpoint-candidates=${JSON.stringify([...urlMatches].slice(0, 80))}`);
+
+    for (const needle of ['model_ratio', 'completion_ratio', 'group_ratio', 'pricing', 'gpt-6-astra', 'gpt-5.6-sol', 'claude-opus-5', '/api/']) {
+      let from = 0;
+      let emitted = 0;
+      const lower = js.toLowerCase();
+      const target = needle.toLowerCase();
+      while (emitted < 3) {
+        const index = lower.indexOf(target, from);
+        if (index < 0) break;
+        console.log(`! bundle-snippet[${needle}]=${compactSnippet(js, index)}`);
+        emitted += 1;
+        from = index + target.length;
+      }
     }
   }
 
