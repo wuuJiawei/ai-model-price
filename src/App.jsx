@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatedNumber } from './components/AnimatedNumber.jsx';
+import { Tooltip } from './components/Tooltip.jsx';
 
 const GITHUB = 'https://github.com/wuuJiawei/ai-model-price';
 
@@ -122,9 +123,9 @@ export default function App() {
       <header className="nav">
         <a className="brand" href="./">AI MODEL PRICE</a>
         <div className="nav-meta">
-          <span title={latestTime ? `最近一次价格更新时间：${latestTime}` : undefined}>
-            <Pill>更新时间 {data.data_updated_at || '—'}</Pill>
-          </span>
+          <Tooltip content={latestTime ? `最近一次价格更新时间：${latestTime}` : `更新时间：${data.data_updated_at || '—'}`} side="bottom">
+            <span className="pill">更新时间 {data.data_updated_at || '—'}</span>
+          </Tooltip>
           <Pill>USD/CNY {fx}</Pill>
           <a className="ghost-link" href={GITHUB} target="_blank" rel="noreferrer">GitHub <ExternalIcon /></a>
         </div>
@@ -201,7 +202,11 @@ export default function App() {
                             <td>
                               <div className="provider-cell">
                                 <div><strong>{r.provider_name}</strong><small>{r.native_currency}</small></div>
-                                {r.website && <a className="visit" href={r.website} target="_blank" rel="noreferrer" aria-label={`访问 ${r.provider_name}`}><ExternalIcon /></a>}
+                                {r.website && (
+                                  <Tooltip content={`访问 ${r.provider_name}`}>
+                                    <a className="visit" href={r.website} target="_blank" rel="noreferrer" aria-label={`访问 ${r.provider_name}`}><ExternalIcon /></a>
+                                  </Tooltip>
+                                )}
                               </div>
                             </td>
                             <td className={r.input_cny === inputMin ? 'best' : ''}>{money(r.input_cny)}<small>原价 {r.native_currency === 'CNY' ? '¥' : '$'}{fmt(r.input_native)}</small></td>
@@ -212,11 +217,15 @@ export default function App() {
                             <td>
                               <div className="update-cell">
                                 {r.auto_sync && (
-                                  <span className="auto-sync-mark" title={autoSyncText(r.auto_sync_interval)}>
-                                    <RefreshIcon />
-                                  </span>
+                                  <Tooltip content={autoSyncText(r.auto_sync_interval)}>
+                                    <span className="auto-sync-mark" aria-label={autoSyncText(r.auto_sync_interval)}>
+                                      <RefreshIcon />
+                                    </span>
+                                  </Tooltip>
                                 )}
-                                <span title={fullUpdateTime ? `更新时间：${fullUpdateTime}` : undefined}>{r.updated_at}</span>
+                                <Tooltip content={fullUpdateTime ? `更新时间：${fullUpdateTime}` : `更新时间：${r.updated_at || '—'}`}>
+                                  <span className="update-date">{r.updated_at || '—'}</span>
+                                </Tooltip>
                               </div>
                             </td>
                           </motion.tr>
