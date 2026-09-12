@@ -26,6 +26,9 @@ for (const p of providers) {
       website: p.website || null,
       source_url: p.source_url || null,
       updated_at: p.updated_at,
+      updated_at_time: p.updated_at_time || null,
+      auto_sync: p.auto_sync?.enabled === true,
+      auto_sync_interval: p.auto_sync?.interval || null,
       native_currency: p.currency,
       model_id: price.model,
       model_name: model.name,
@@ -52,11 +55,14 @@ const providerMeta = providers.map(({models, ...p}) => ({
   ...p
 }));
 const dates = providerMeta.map(p => p.updated_at).filter(Boolean).sort();
+const dateTimes = providerMeta.map(p => p.updated_at_time).filter(Boolean).sort();
 const dataUpdatedAt = dates.at(-1) || null;
+const dataUpdatedAtTime = dateTimes.at(-1) || null;
 
 const out = {
   generated_at: new Date().toISOString(),
   data_updated_at: dataUpdatedAt,
+  data_updated_at_time: dataUpdatedAtTime,
   unit: '1M tokens',
   fx: { usd_cny: config.usd_cny, updated_at: config.fx_updated_at },
   vendors: config.vendors || [],
