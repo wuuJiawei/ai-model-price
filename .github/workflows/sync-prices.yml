@@ -9,6 +9,8 @@ on:
     paths:
       - 'scripts/sync-teamo.mjs'
       - 'scripts/sync-9527.mjs'
+      - 'scripts/sync-zeta.mjs'
+      - 'scripts/sync-4router.mjs'
       - '.github/workflows/sync-prices.yml'
 
 permissions:
@@ -43,13 +45,28 @@ jobs:
         continue-on-error: true
         run: node scripts/sync-9527.mjs
 
+      - name: Fetch ZetaAPI pricing
+        id: zeta
+        continue-on-error: true
+        run: node scripts/sync-zeta.mjs
+
+      - name: Fetch 4Router pricing
+        id: router4
+        continue-on-error: true
+        run: node scripts/sync-4router.mjs
+
       - name: Check sync results
         shell: bash
         run: |
           echo "TeamoRouter: ${{ steps.teamo.outcome }}"
           echo "9527CODE: ${{ steps.code9527.outcome }}"
-          if [[ "${{ steps.teamo.outcome }}" == "failure" && "${{ steps.code9527.outcome }}" == "failure" ]]; then
-            echo 'Both pricing sync tasks failed.'
+          echo "ZetaAPI: ${{ steps.zeta.outcome }}"
+          echo "4Router: ${{ steps.router4.outcome }}"
+          if [[ "${{ steps.teamo.outcome }}" == "failure" && \
+                "${{ steps.code9527.outcome }}" == "failure" && \
+                "${{ steps.zeta.outcome }}" == "failure" && \
+                "${{ steps.router4.outcome }}" == "failure" ]]; then
+            echo 'All pricing sync tasks failed.'
             exit 1
           fi
 
@@ -59,12 +76,18 @@ jobs:
       - name: Commit latest sync snapshot
         shell: bash
         run: |
-          if git diff --quiet -- data/providers/teamo.json data/providers/9527code.json; then
+          PROVIDERS=(
+            data/providers/teamo.json
+            data/providers/9527code.json
+            data/providers/zeta.json
+            data/providers/4router.json
+          )
+          if git diff --quiet -- "${PROVIDERS[@]}"; then
             echo 'No relay pricing data changes.'
           else
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add data/providers/teamo.json data/providers/9527code.json
+            git add "${PROVIDERS[@]}"
             git commit -m 'chore(data): sync relay prices'
             git pull --rebase
             git push
