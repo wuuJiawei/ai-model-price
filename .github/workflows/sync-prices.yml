@@ -13,6 +13,7 @@ on:
       - 'scripts/sync-4router.mjs'
       - 'scripts/sync-apikey-fun.mjs'
       - 'scripts/sync-apinebula.mjs'
+      - 'scripts/sync-apiplus.mjs'
       - '.github/workflows/sync-prices.yml'
 
 permissions:
@@ -67,6 +68,11 @@ jobs:
         continue-on-error: true
         run: node scripts/sync-apinebula.mjs
 
+      - name: Fetch APIPlus pricing
+        id: apiplus
+        continue-on-error: true
+        run: node scripts/sync-apiplus.mjs
+
       - name: Check sync results
         shell: bash
         run: |
@@ -76,12 +82,14 @@ jobs:
           echo "4Router: ${{ steps.router4.outcome }}"
           echo "APIKEY.FUN: ${{ steps.apikeyfun.outcome }}"
           echo "APINebula: ${{ steps.apinebula.outcome }}"
+          echo "APIPlus: ${{ steps.apiplus.outcome }}"
           if [[ "${{ steps.teamo.outcome }}" == "failure" && \
                 "${{ steps.code9527.outcome }}" == "failure" && \
                 "${{ steps.zeta.outcome }}" == "failure" && \
                 "${{ steps.router4.outcome }}" == "failure" && \
                 "${{ steps.apikeyfun.outcome }}" == "failure" && \
-                "${{ steps.apinebula.outcome }}" == "failure" ]]; then
+                "${{ steps.apinebula.outcome }}" == "failure" && \
+                "${{ steps.apiplus.outcome }}" == "failure" ]]; then
             echo 'All pricing sync tasks failed.'
             exit 1
           fi
@@ -99,6 +107,7 @@ jobs:
             data/providers/4router.json
             data/providers/apikey-fun.json
             data/providers/apinebula.json
+            data/providers/apiplus.json
           )
           if git diff --quiet -- "${PROVIDERS[@]}"; then
             echo 'No relay pricing data changes.'
