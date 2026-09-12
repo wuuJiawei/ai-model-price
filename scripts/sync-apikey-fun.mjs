@@ -79,7 +79,6 @@ function isGeneralPurposeGroup(group) {
   const description = group.description || '';
   const text = `${name} ${description}`;
 
-  // 排除明确限制在特定客户端/场景的分组；“支持生图”本身不代表这是生图专用分组。
   if (/仅限|only\b/i.test(text)) return false;
   if (/生图分组|图片分组|image[- ]?only/i.test(name)) return false;
 
@@ -96,7 +95,6 @@ function pickGroup(groups, platform) {
   if (!candidates.length) return null;
 
   if (platform === 'openai') {
-    // 优先可外接的 Codex/API 号池，避免把纯生图或“仅限 Codex”价格算进来。
     const preferred = candidates.filter(group => /外接|codex|api/i.test(`${group.name || ''} ${group.description || ''}`));
     if (preferred.length) return preferred[0];
   }
@@ -139,7 +137,11 @@ function parseBaseModel(bundle, modelId) {
     if (index < 0) return null;
     from = index + needle.length;
 
-    const chunk = bundle.slice(index, index + 700);
+    // 限定在当前 model object 内，避免 cacheRead/cacheCreate 误读到下一个模型。
+    const nextModel = bundle.indexOf('},{name:"', from);
+    const end = nextModel >= 0 ? nextModel + 1 : Math.min(bundle.length, index + 700);
+    const chunk = bundle.slice(index, end);
+
     const input = extractNumber(chunk, 'inputUsd');
     const output = extractNumber(chunk, 'outputUsd');
     if (input == null || output == null || input <= 0 || output < input) continue;
@@ -197,8 +199,6 @@ for (const model of canonicalModels) {
   nextModels.push(item);
 }
 
-// 当前官网公开价页正常情况下可匹配十余个 GPT / Claude canonical models。
-// 过低说明前端结构可能已变化，直接失败，不覆盖上一份有效数据。
 if (nextModels.length < 8) {
   throw new Error(`APIKEY.FUN 仅解析到 ${nextModels.length} 个目标模型，疑似页面结构变化，停止更新。`);
 }
