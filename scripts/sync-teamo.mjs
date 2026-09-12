@@ -70,13 +70,9 @@ function parseModel(text, label) {
   return candidates[0] || null;
 }
 
-function shanghaiDate() {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Shanghai',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  }).format(new Date());
+function shanghaiDateTime() {
+  const shifted = new Date(Date.now() + 8 * 60 * 60 * 1000);
+  return shifted.toISOString().replace(/\.\d{3}Z$/, '+08:00');
 }
 
 const response = await fetch(PAGE_URL, {
@@ -137,10 +133,18 @@ if (provider.source_url !== PRICE_URL) {
   changed = true;
 }
 
+const desiredAutoSync = { enabled: true, interval: 'hourly' };
+if (JSON.stringify(provider.auto_sync) !== JSON.stringify(desiredAutoSync)) {
+  provider.auto_sync = desiredAutoSync;
+  changed = true;
+}
+
 if (changed) {
-  provider.updated_at = shanghaiDate();
+  const updatedAtTime = shanghaiDateTime();
+  provider.updated_at = updatedAtTime.slice(0, 10);
+  provider.updated_at_time = updatedAtTime;
   fs.writeFileSync(providerPath, JSON.stringify(provider, null, 2) + '\n');
-  console.log(`✓ TeamoRouter 已更新：${changes.length ? changes.join('; ') : '来源地址更新'}`);
+  console.log(`✓ TeamoRouter 已更新：${changes.length ? changes.join('; ') : '同步元数据更新'}；时间 ${updatedAtTime}`);
 } else {
   console.log(`✓ TeamoRouter 已检查，${found} 个模型价格无变化。`);
 }
