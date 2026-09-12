@@ -1,6 +1,6 @@
 {
   "name": "ai-model-price",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,6 +14,7 @@
     "cf:deploy": "npm run build && npx wrangler pages deploy site"
   },
   "dependencies": {
+    "lucide-react": "^0.468.0",
     "motion": "^12.23.12",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
