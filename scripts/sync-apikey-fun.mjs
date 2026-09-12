@@ -46,16 +46,13 @@ function pickGroup(vendor, enableGroups, groupRatio) {
     if (match) return match;
   }
 
-  const publicCandidates = enabled
+  return enabled
     .filter(group => !EXCLUDED_GROUPS.test(group))
-    .sort((a, b) => groupRatio.get(a) - groupRatio.get(b));
-
-  return publicCandidates[0] || null;
+    .sort((a, b) => groupRatio.get(a) - groupRatio.get(b))[0] || null;
 }
 
 function pricingFor(row, groupMultiplier) {
   if (Number(row.quota_type) === 1) return null;
-
   const modelRatio = asNumber(row.model_ratio);
   const completionRatio = asNumber(row.completion_ratio);
   if (modelRatio == null || completionRatio == null) return null;
@@ -78,20 +75,40 @@ function sameNumber(a, b) {
   return Math.abs(Number(a) - Number(b)) < 1e-9;
 }
 
+const requestHeaders = {
+  accept: 'application/json,text/plain,*/*',
+  'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
+  'cache-control': 'no-store',
+  referer: PRICE_URL,
+  'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36',
+};
+
+async function inspectPricingPage(errors) {
+  const response = await fetch(PRICE_URL, {
+    redirect: 'follow',
+    headers: { ...requestHeaders, accept: 'text/html,application/xhtml+xml' },
+  });
+  const html = await response.text();
+  console.log(`! pricing page fallback: HTTP ${response.status}, content-type=${response.headers.get('content-type')}, length=${html.length}`);
+
+  const scripts = [...html.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map(m => m[1]);
+  console.log(`! scripts=${JSON.stringify(scripts.slice(0, 20))}`);
+
+  for (const needle of ['gpt-6', 'gpt-5.6', 'claude-opus', 'pricing', '__NEXT_DATA__', '__NUXT__']) {
+    const index = html.toLowerCase().indexOf(needle.toLowerCase());
+    if (index >= 0) {
+      const snippet = html.slice(Math.max(0, index - 450), Math.min(html.length, index + 1500)).replace(/\s+/g, ' ');
+      console.log(`! html-snippet[${needle}]=${snippet}`);
+    }
+  }
+
+  throw new Error(`APIKEY.FUN pricing API unavailable: ${errors.join('; ')}`);
+}
+
 async function fetchPricingPayload() {
   const errors = [];
   for (const apiUrl of API_URLS) {
-    const response = await fetch(apiUrl, {
-      redirect: 'follow',
-      headers: {
-        accept: 'application/json,text/plain,*/*',
-        'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
-        'cache-control': 'no-store',
-        referer: PRICE_URL,
-        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36',
-      },
-    });
-
+    const response = await fetch(apiUrl, { redirect: 'follow', headers: requestHeaders });
     if (!response.ok) {
       errors.push(`${apiUrl} -> HTTP ${response.status}`);
       continue;
@@ -107,14 +124,12 @@ async function fetchPricingPayload() {
     return payload;
   }
 
-  throw new Error(`APIKEY.FUN pricing API unavailable: ${errors.join('; ')}`);
+  return inspectPricingPage(errors);
 }
 
 const payload = await fetchPricingPayload();
 const groupRatio = normalizeGroupRatio(payload.group_ratio);
-if (!groupRatio.size) {
-  throw new Error('APIKEY.FUN pricing API 未返回可用 group_ratio，停止更新。');
-}
+if (!groupRatio.size) throw new Error('APIKEY.FUN pricing API 未返回可用 group_ratio，停止更新。');
 
 const canonicalModels = JSON.parse(fs.readFileSync(modelsPath, 'utf8'));
 const provider = JSON.parse(fs.readFileSync(providerPath, 'utf8'));
@@ -128,7 +143,6 @@ const changes = [];
 
 for (const model of canonicalModels) {
   if (!GROUP_PATTERNS[model.vendor]) continue;
-
   const aliases = [model.id, ...(model.aliases || [])];
   const row = aliases.map(alias => pricingRows.get(alias)).find(Boolean);
   if (!row) continue;
@@ -140,23 +154,14 @@ for (const model of canonicalModels) {
   }
 
   const price = pricingFor(row, groupRatio.get(group));
-  if (!price) {
-    console.warn(`! ${model.id} 不是可比较的 token 计费，保留现有价格`);
-    continue;
-  }
+  if (!price) continue;
 
   found += 1;
   const note = `自动采集 · ${group}`;
   const current = currentMap.get(model.id);
 
   if (!current) {
-    const next = {
-      model: model.id,
-      input: price.input,
-      output: price.output,
-      ...(price.cached_input == null ? {} : { cached_input: price.cached_input }),
-      note,
-    };
+    const next = { model: model.id, input: price.input, output: price.output, ...(price.cached_input == null ? {} : { cached_input: price.cached_input }), note };
     provider.models.push(next);
     currentMap.set(model.id, next);
     changed = true;
@@ -164,13 +169,8 @@ for (const model of canonicalModels) {
     continue;
   }
 
-  const priceChanged =
-    !sameNumber(current.input, price.input) ||
-    !sameNumber(current.output, price.output) ||
-    !sameNumber(current.cached_input, price.cached_input);
-  const noteChanged = current.note !== note;
-
-  if (priceChanged || noteChanged) {
+  const priceChanged = !sameNumber(current.input, price.input) || !sameNumber(current.output, price.output) || !sameNumber(current.cached_input, price.cached_input);
+  if (priceChanged || current.note !== note) {
     const before = `${current.input}/${current.output}/${current.cached_input ?? '-'}`;
     current.input = price.input;
     current.output = price.output;
@@ -182,9 +182,7 @@ for (const model of canonicalModels) {
   }
 }
 
-if (found === 0) {
-  throw new Error('未从 APIKEY.FUN pricing API 匹配到任何目标模型与公开分组，停止更新，避免覆盖错误数据。');
-}
+if (found === 0) throw new Error('未从 APIKEY.FUN pricing API 匹配到任何目标模型与公开分组，停止更新。');
 
 provider.currency = 'CNY';
 provider.source_url = PRICE_URL;
@@ -195,11 +193,8 @@ if (provider.note === '价格正在努力登记中') delete provider.note;
 const updatedAtTime = shanghaiDateTime();
 provider.updated_at = updatedAtTime.slice(0, 10);
 provider.updated_at_time = updatedAtTime;
-
 fs.writeFileSync(providerPath, JSON.stringify(provider, null, 2) + '\n');
 
-if (changed) {
-  console.log(`✓ APIKEY.FUN 价格已更新：${changes.join('; ')}；同步时间 ${updatedAtTime}`);
-} else {
-  console.log(`✓ APIKEY.FUN 已成功校验 ${found} 个模型，价格无变化；同步时间 ${updatedAtTime}`);
-}
+console.log(changed
+  ? `✓ APIKEY.FUN 价格已更新：${changes.join('; ')}；同步时间 ${updatedAtTime}`
+  : `✓ APIKEY.FUN 已成功校验 ${found} 个模型，价格无变化；同步时间 ${updatedAtTime}`);
