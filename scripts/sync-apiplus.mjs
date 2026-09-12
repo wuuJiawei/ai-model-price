@@ -1,51 +1,37 @@
-import fs from 'node:fs';
-import path from 'node:path';
-
 const PRICE_URL = 'https://www.aiapisplus.com/pricing';
-const API_URLS = [
-  'https://www.aiapisplus.com/api/pricing',
-  'https://www.aiapisplus.com/api/ratio_config',
-];
-const root = process.cwd();
-const modelsPath = path.join(root, 'data/models.json');
-const canonicalModels = JSON.parse(fs.readFileSync(modelsPath, 'utf8'));
-const targetNames = new Set(canonicalModels.flatMap(model => [model.id, ...(model.aliases || [])]).map(v => String(v).toLowerCase()));
-
 const headers = {
-  accept: 'application/json,text/plain,*/*',
+  accept: 'text/html,application/javascript,application/json,text/plain,*/*',
   'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
   'cache-control': 'no-store',
-  referer: PRICE_URL,
   'user-agent': 'Mozilla/5.0 (compatible; ai-model-price-bot/1.0; +https://github.com/wuuJiawei/ai-model-price)',
 };
 
-for (const url of API_URLS) {
-  try {
-    const response = await fetch(url, { redirect: 'follow', headers });
-    const text = await response.text();
-    console.log(`APIPlus ${url}: HTTP ${response.status}, content-type=${response.headers.get('content-type')}, length=${text.length}`);
-    if (!response.ok) continue;
+const pageRes = await fetch(PRICE_URL, { redirect: 'follow', headers });
+const html = await pageRes.text();
+console.log(`APIPlus pricing page: HTTP ${pageRes.status}, length=${html.length}`);
+if (!pageRes.ok) throw new Error(`pricing page HTTP ${pageRes.status}`);
 
-    let payload;
-    try {
-      payload = JSON.parse(text);
-    } catch {
-      console.log(text.slice(0, 3000));
-      continue;
+const scripts = [...html.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map(m => m[1]);
+console.log(`APIPlus scripts=${JSON.stringify(scripts)}`);
+
+for (const src of scripts.slice(0, 30)) {
+  const url = new URL(src, PRICE_URL);
+  if (url.origin !== new URL(PRICE_URL).origin) continue;
+  const res = await fetch(url, { redirect: 'follow', headers: { ...headers, referer: PRICE_URL } });
+  if (!res.ok) continue;
+  const js = await res.text();
+  console.log(`APIPlus bundle=${url.href}, length=${js.length}`);
+  const lower = js.toLowerCase();
+  for (const needle of ['tiered_pricing', 'tier_count', '/api/pricing', 'pricing/tier', 'tiered']) {
+    let from = 0;
+    let found = 0;
+    while (found < 3) {
+      const index = lower.indexOf(needle, from);
+      if (index < 0) break;
+      console.log(`APIPlus[${needle}]#${found + 1}=${js.slice(Math.max(0, index - 900), Math.min(js.length, index + 2200)).replace(/\s+/g, ' ')}`);
+      from = index + needle.length;
+      found += 1;
     }
-
-    const data = Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];
-    const matched = data.filter(row => targetNames.has(String(row?.model_name || row?.model || row?.name || '').toLowerCase()));
-    console.log(`APIPlus matched=${matched.length}`);
-    console.log(JSON.stringify({
-      group_ratio: payload?.group_ratio || payload?.data?.group_ratio || null,
-      auto_groups: payload?.auto_groups || null,
-      usable_group: payload?.usable_group || null,
-      usd_cny_rate: payload?.usd_cny_rate || null,
-      matched,
-    }).slice(0, 30000));
-  } catch (error) {
-    console.warn(`APIPlus ${url} failed: ${String(error?.message || error)}`);
   }
 }
 
