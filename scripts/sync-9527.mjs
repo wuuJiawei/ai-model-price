@@ -170,23 +170,19 @@ if (found === 0) {
   throw new Error('未从 9527CODE /api/pricing 匹配到任何目标模型与特惠分组，停止更新，避免覆盖错误数据。');
 }
 
-if (provider.source_url !== PRICE_URL) {
-  provider.source_url = PRICE_URL;
-  changed = true;
-}
+provider.source_url = PRICE_URL;
+provider.auto_sync = { enabled: true, interval: 'hourly' };
 
-const desiredAutoSync = { enabled: true, interval: 'hourly' };
-if (JSON.stringify(provider.auto_sync) !== JSON.stringify(desiredAutoSync)) {
-  provider.auto_sync = desiredAutoSync;
-  changed = true;
-}
+// 只要本次抓取和解析成功，就记录“最后成功同步时间”。
+// 即使价格没有变化，页面也能准确显示这条数据最近一次被自动校验的时间。
+const updatedAtTime = shanghaiDateTime();
+provider.updated_at = updatedAtTime.slice(0, 10);
+provider.updated_at_time = updatedAtTime;
+
+fs.writeFileSync(providerPath, JSON.stringify(provider, null, 2) + '\n');
 
 if (changed) {
-  const updatedAtTime = shanghaiDateTime();
-  provider.updated_at = updatedAtTime.slice(0, 10);
-  provider.updated_at_time = updatedAtTime;
-  fs.writeFileSync(providerPath, JSON.stringify(provider, null, 2) + '\n');
-  console.log(`✓ 9527CODE 已更新：${changes.length ? changes.join('; ') : '同步元数据更新'}；时间 ${updatedAtTime}`);
+  console.log(`✓ 9527CODE 价格已更新：${changes.join('; ')}；同步时间 ${updatedAtTime}`);
 } else {
-  console.log(`✓ 9527CODE 已检查，匹配 ${found} 个模型，价格无变化。`);
+  console.log(`✓ 9527CODE 已成功校验 ${found} 个模型，价格无变化；同步时间 ${updatedAtTime}`);
 }
