@@ -6,10 +6,11 @@
   "scripts": {
     "validate": "node scripts/validate.mjs",
     "build:data": "node scripts/build.mjs",
+    "build:brand": "node scripts/generate-brand-assets.mjs",
     "build:web": "vite build",
-    "build": "npm run validate && npm run build:data && npm run build:web",
+    "build": "npm run validate && npm run build:data && npm run build:brand && npm run build:web",
     "check": "npm run build",
-    "dev": "npm run build:data && vite",
+    "dev": "npm run build:data && npm run build:brand && vite",
     "cf:dev": "npm run build && npx wrangler pages dev site",
     "cf:deploy": "npm run build && npx wrangler pages deploy site"
   },

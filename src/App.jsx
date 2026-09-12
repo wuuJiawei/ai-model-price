@@ -114,7 +114,17 @@ export default function App() {
   return (
     <div className="page-shell">
       <header className="nav">
-        <a className="brand" href="./">AI MODEL PRICE</a>
+        <a className="brand" href="./" aria-label="中转站价格对比">
+          <motion.img
+            className="brand-logo"
+            src={`${import.meta.env.BASE_URL}logo.svg`}
+            alt=""
+            whileHover={{ rotate: -4, scale: 1.06 }}
+            whileTap={{ scale: .94 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 24 }}
+          />
+          <span>AI MODEL PRICE</span>
+        </a>
         <div className="nav-meta">
           <Tooltip content={latestTime ? `最近一次价格更新时间：${latestTime}` : `更新时间：${data.data_updated_at || '—'}`}><span><Pill>更新时间 {data.data_updated_at || '—'}</Pill></span></Tooltip>
           <Pill>USD/CNY {fx}</Pill>
