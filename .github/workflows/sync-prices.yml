@@ -11,6 +11,7 @@ on:
       - 'scripts/sync-9527.mjs'
       - 'scripts/sync-zeta.mjs'
       - 'scripts/sync-4router.mjs'
+      - 'scripts/sync-apikey-fun.mjs'
       - '.github/workflows/sync-prices.yml'
 
 permissions:
@@ -55,6 +56,11 @@ jobs:
         continue-on-error: true
         run: node scripts/sync-4router.mjs
 
+      - name: Fetch APIKEY.FUN pricing
+        id: apikeyfun
+        continue-on-error: true
+        run: node scripts/sync-apikey-fun.mjs
+
       - name: Check sync results
         shell: bash
         run: |
@@ -62,10 +68,12 @@ jobs:
           echo "9527CODE: ${{ steps.code9527.outcome }}"
           echo "ZetaAPI: ${{ steps.zeta.outcome }}"
           echo "4Router: ${{ steps.router4.outcome }}"
+          echo "APIKEY.FUN: ${{ steps.apikeyfun.outcome }}"
           if [[ "${{ steps.teamo.outcome }}" == "failure" && \
                 "${{ steps.code9527.outcome }}" == "failure" && \
                 "${{ steps.zeta.outcome }}" == "failure" && \
-                "${{ steps.router4.outcome }}" == "failure" ]]; then
+                "${{ steps.router4.outcome }}" == "failure" && \
+                "${{ steps.apikeyfun.outcome }}" == "failure" ]]; then
             echo 'All pricing sync tasks failed.'
             exit 1
           fi
@@ -81,6 +89,7 @@ jobs:
             data/providers/9527code.json
             data/providers/zeta.json
             data/providers/4router.json
+            data/providers/apikey-fun.json
           )
           if git diff --quiet -- "${PROVIDERS[@]}"; then
             echo 'No relay pricing data changes.'
