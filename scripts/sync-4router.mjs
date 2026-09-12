@@ -7,6 +7,15 @@ const root = process.cwd();
 const providerPath = path.join(root, 'data/providers/4router.json');
 const modelsPath = path.join(root, 'data/models.json');
 
+// 4Router 没有统一 default 分组，不同厂商有各自的路由池。
+// 对价格对比站只选择明确支持第三方软件接入的公开分组，避免把
+// ClaudeMax / ccMax-sale 这类仅限原生 ClaudeCode / 4RouterAI 的价格混进来。
+const GROUP_PREFERENCES = {
+  OpenAI: ['GptPro', 'GptApi'],
+  Anthropic: ['cheapClaude', 'ClaudeApi', 'ClaudeApiV', 'OfficialClaude', 'ClaudeExtern'],
+  Google: ['GeminiApi'],
+};
+
 function shanghaiDateTime() {
   const shifted = new Date(Date.now() + 8 * 60 * 60 * 1000);
   return shifted.toISOString().replace(/\.\d{3}Z$/, '+08:00');
@@ -26,26 +35,27 @@ function normalizeGroupRatio(raw) {
   return out;
 }
 
-function pickDefaultGroup(enableGroups, groupRatio) {
-  const enabled = (Array.isArray(enableGroups) ? enableGroups : [])
-    .filter(group => groupRatio.has(group));
+function findGroupRatio(groupRatio, groupName) {
+  const target = String(groupName).toLowerCase();
+  for (const [key, value] of groupRatio) {
+    if (String(key).toLowerCase() === target) return { name: key, ratio: value };
+  }
+  return null;
+}
 
-  if (!enabled.length) return null;
+function pickGroup(vendor, enableGroups, groupRatio) {
+  const enabled = Array.isArray(enableGroups) ? enableGroups : [];
+  const enabledLower = new Map(enabled.map(group => [String(group).toLowerCase(), group]));
+  const preferences = GROUP_PREFERENCES[vendor] || [];
 
-  const preferredPatterns = [
-    /^default$/i,
-    /^默认$/,
-    /^standard$/i,
-    /^标准$/,
-  ];
-
-  for (const pattern of preferredPatterns) {
-    const match = enabled.find(group => pattern.test(group));
-    if (match) return match;
+  for (const preferred of preferences) {
+    const actualEnabled = enabledLower.get(preferred.toLowerCase());
+    if (!actualEnabled) continue;
+    const resolved = findGroupRatio(groupRatio, actualEnabled);
+    if (resolved) return resolved;
   }
 
-  // 只有一个可用分组时可安全采用；多个非默认分组时不猜，避免把会员价当公开价。
-  return enabled.length === 1 ? enabled[0] : null;
+  return null;
 }
 
 function pricingFor(row, groupMultiplier) {
@@ -66,12 +76,6 @@ function pricingFor(row, groupMultiplier) {
     output: +output.toFixed(8),
     cached_input: cachedInput == null ? null : +cachedInput.toFixed(8),
   };
-}
-
-function sameNumber(a, b) {
-  if (a == null && b == null) return true;
-  if (a == null || b == null) return false;
-  return Math.abs(Number(a) - Number(b)) < 1e-9;
 }
 
 const response = await fetch(API_URL, {
@@ -101,86 +105,56 @@ if (!groupRatio.size) {
 
 const canonicalModels = JSON.parse(fs.readFileSync(modelsPath, 'utf8'));
 const provider = JSON.parse(fs.readFileSync(providerPath, 'utf8'));
-provider.models ||= [];
-const currentMap = new Map(provider.models.map(item => [item.model, item]));
-const pricingRows = new Map(payload.data.map(item => [String(item.model_name || ''), item]));
-
-let found = 0;
-let changed = false;
+const pricingRows = new Map(payload.data.map(item => [String(item.model_name || '').toLowerCase(), item]));
+const nextModels = [];
 const changes = [];
 
 for (const model of canonicalModels) {
-  const aliases = [model.id, ...(model.aliases || [])];
+  if (!GROUP_PREFERENCES[model.vendor]) continue;
+
+  const aliases = [model.id, ...(model.aliases || [])].map(alias => String(alias).toLowerCase());
   const row = aliases.map(alias => pricingRows.get(alias)).find(Boolean);
   if (!row) continue;
 
-  const group = pickDefaultGroup(row.enable_groups, groupRatio);
+  const group = pickGroup(model.vendor, row.enable_groups, groupRatio);
   if (!group) {
-    console.warn(`! ${model.id} 未找到明确默认分组，保留现有价格`);
+    console.warn(`! ${model.id} 未启用目标公开分组，跳过`);
     continue;
   }
 
-  const price = pricingFor(row, groupRatio.get(group));
+  const price = pricingFor(row, group.ratio);
   if (!price) {
-    console.warn(`! ${model.id} 不是可比较的 token 计费，保留现有价格`);
+    console.warn(`! ${model.id} 不是可比较的 token 计费，跳过`);
     continue;
   }
 
-  found += 1;
-  const note = `自动采集 · ${group}`;
-  const current = currentMap.get(model.id);
-
-  if (!current) {
-    const next = {
-      model: model.id,
-      input: price.input,
-      output: price.output,
-      ...(price.cached_input == null ? {} : { cached_input: price.cached_input }),
-      note,
-    };
-    provider.models.push(next);
-    currentMap.set(model.id, next);
-    changed = true;
-    changes.push(`${model.id}: 新增 ${price.input}/${price.output} (${group})`);
-    continue;
-  }
-
-  const priceChanged =
-    !sameNumber(current.input, price.input) ||
-    !sameNumber(current.output, price.output) ||
-    !sameNumber(current.cached_input, price.cached_input);
-  const noteChanged = current.note !== note;
-
-  if (priceChanged || noteChanged) {
-    const before = `${current.input}/${current.output}/${current.cached_input ?? '-'}`;
-    current.input = price.input;
-    current.output = price.output;
-    if (price.cached_input == null) delete current.cached_input;
-    else current.cached_input = price.cached_input;
-    current.note = note;
-    changed = true;
-    changes.push(`${model.id}: ${before} -> ${price.input}/${price.output}/${price.cached_input ?? '-'} (${group})`);
-  }
+  const item = {
+    model: model.id,
+    input: price.input,
+    output: price.output,
+    ...(price.cached_input == null ? {} : { cached_input: price.cached_input }),
+    note: `自动采集 · ${group.name}`,
+  };
+  nextModels.push(item);
+  changes.push(`${model.id}: ${price.input}/${price.output}/${price.cached_input ?? '-'} (${group.name})`);
 }
 
-if (found === 0) {
-  throw new Error('未从 4Router /api/pricing 匹配到任何目标模型与明确默认分组，停止更新，避免覆盖错误数据。');
+if (nextModels.length === 0) {
+  throw new Error('未从 4Router /api/pricing 匹配到任何目标模型与公开对比分组，停止更新，避免覆盖错误数据。');
 }
 
+// 4Router 是实时 NewAPI 数据源。每次成功同步都重建本站的模型快照，
+// 防止已下线模型、已变更分组或旧的误匹配价格残留在页面里。
+provider.models = nextModels;
 provider.currency = 'USD';
 provider.source_url = PRICE_URL;
 provider.auto_sync = { enabled: true, interval: 'hourly' };
 delete provider.status;
-if (provider.note?.includes('待补录')) delete provider.note;
+delete provider.note;
 
 const updatedAtTime = shanghaiDateTime();
 provider.updated_at = updatedAtTime.slice(0, 10);
 provider.updated_at_time = updatedAtTime;
 
 fs.writeFileSync(providerPath, JSON.stringify(provider, null, 2) + '\n');
-
-if (changed) {
-  console.log(`✓ 4Router 价格已更新：${changes.join('; ')}；同步时间 ${updatedAtTime}`);
-} else {
-  console.log(`✓ 4Router 已成功校验 ${found} 个模型，价格无变化；同步时间 ${updatedAtTime}`);
-}
+console.log(`✓ 4Router 已同步 ${nextModels.length} 个模型：${changes.join('; ')}；同步时间 ${updatedAtTime}`);
