@@ -2,10 +2,21 @@
   "id": "4router",
   "name": "4Router",
   "website": "https://4router.net/pricing",
-  "currency": null,
+  "currency": "USD",
   "updated_at": "2026-09-12",
   "source_url": "https://4router.net/pricing",
-  "status": "pending",
-  "note": "已收录站点；官网价格页采用 JavaScript 动态渲染，当前无法可靠提取完整实时模型价格，待补录准确价格。",
-  "models": []
+  "models": [
+    {
+      "model": "claude-haiku-4-5",
+      "input": 1.5,
+      "output": 7.5,
+      "cached_input": 1.5,
+      "note": "自动采集 · ClaudeMax"
+    }
+  ],
+  "auto_sync": {
+    "enabled": true,
+    "interval": "hourly"
+  },
+  "updated_at_time": "2026-09-12T14:21:41+08:00"
 }
