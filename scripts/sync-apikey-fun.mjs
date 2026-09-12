@@ -75,9 +75,13 @@ function isGeneralPurposeGroup(group) {
   if (group.subscription_type && group.subscription_type !== 'standard') return false;
   if (group.claude_code_only === true || group.codex_cli_only === true) return false;
 
-  const text = `${group.name || ''} ${group.description || ''}`;
-  // 站内有“仅限 Codex / 仅限 CC / 生图”等专用分组，不拿这类专属价和普通中转 API 做横向比较。
-  if (/仅限|only\b|生图|image[- ]?only/i.test(text)) return false;
+  const name = group.name || '';
+  const description = group.description || '';
+  const text = `${name} ${description}`;
+
+  // 排除明确限制在特定客户端/场景的分组；“支持生图”本身不代表这是生图专用分组。
+  if (/仅限|only\b/i.test(text)) return false;
+  if (/生图分组|图片分组|image[- ]?only/i.test(name)) return false;
 
   const multiplier = asNumber(group.rate_multiplier);
   return multiplier != null && multiplier > 0;
