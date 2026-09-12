@@ -93,29 +93,44 @@ async function fetchPage(url) {
   return { url: response.url || url, html, text: htmlToText(html) };
 }
 
+function compactSnippet(text, index, before = 500, after = 1200) {
+  return text.slice(Math.max(0, index - before), Math.min(text.length, index + after)).replace(/\s+/g, ' ');
+}
+
 async function inspectBundles(page) {
   const scripts = [...page.html.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map(m => m[1]);
+  console.log(`! APINebula scripts=${JSON.stringify(scripts)}`);
   const endpointCandidates = new Set();
+  let snippetCount = 0;
 
-  for (const src of scripts.slice(0, 24)) {
+  for (const src of scripts.slice(0, 30)) {
     try {
       const scriptUrl = new URL(src, page.url);
       if (scriptUrl.origin !== new URL(page.url).origin) continue;
       const response = await fetch(scriptUrl, { redirect: 'follow', headers: { ...requestHeaders, accept: '*/*' } });
       if (!response.ok) continue;
       const js = await response.text();
-      for (const match of js.matchAll(/["'`]([^"'`]{0,180}(?:pricing|price|fee|model)[^"'`]{0,180})["'`]/gi)) {
-        const value = match[1];
-        if (/^https?:\/\//i.test(value) || value.startsWith('/api/') || value.startsWith('/v1/')) endpointCandidates.add(value);
+      console.log(`! APINebula bundle=${scriptUrl.href}, length=${js.length}`);
+
+      for (const match of js.matchAll(/["'`]((?:https?:\/\/[^"'`\s)]+|\/(?:api|v1)[^"'`\s)]*))["'`]/gi)) {
+        endpointCandidates.add(match[1]);
       }
-    } catch {
-      // Diagnostic fallback only; ignore individual bundle failures.
+
+      const lower = js.toLowerCase();
+      for (const needle of ['pricing', 'fee', 'model_price', 'modelprice', '/api/', 'models', 'group']) {
+        if (snippetCount >= 18) break;
+        const index = lower.indexOf(needle);
+        if (index >= 0) {
+          console.log(`! APINebula[${needle}]=${compactSnippet(js, index)}`);
+          snippetCount += 1;
+        }
+      }
+    } catch (error) {
+      console.warn(`! APINebula bundle inspect failed: ${String(error?.message || error)}`);
     }
   }
 
-  if (endpointCandidates.size) {
-    console.log(`! APINebula endpoint candidates: ${JSON.stringify([...endpointCandidates].slice(0, 80))}`);
-  }
+  console.log(`! APINebula endpoint candidates=${JSON.stringify([...endpointCandidates].slice(0, 120))}`);
 }
 
 const canonicalModels = JSON.parse(fs.readFileSync(modelsPath, 'utf8'));
@@ -126,6 +141,7 @@ const errors = [];
 for (const url of PAGE_URLS) {
   try {
     const page = await fetchPage(url);
+    bestPage ||= page;
     const parsed = canonicalModels.map(model => parseModel(page.text, model)).filter(Boolean);
     console.log(`✓ APINebula ${url} HTTP 页面解析到 ${parsed.length} 个目标模型`);
     if (parsed.length > bestModels.length) {
