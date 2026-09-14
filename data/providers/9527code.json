@@ -3,7 +3,7 @@
   "name": "9527CODE",
   "website": "https://9527.codes/",
   "currency": "USD",
-  "updated_at": "2026-09-14",
+  "updated_at": "2026-09-15",
   "source_url": "https://9527.codes/pricing",
   "models": [
     {
@@ -108,5 +108,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-09-14T22:14:00+08:00"
+  "updated_at_time": "2026-09-15T03:28:34+08:00"
 }
