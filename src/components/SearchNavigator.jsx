@@ -2,6 +2,7 @@ import { ChevronDown, ChevronUp, Search, X } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from './beui/Button.jsx';
+import './SearchNavigator.css';
 
 function rowKey(row) {
   return `${row.model_id}-${row.provider_id}`;
