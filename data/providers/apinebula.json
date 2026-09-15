@@ -37,6 +37,21 @@
       }
     },
     {
+      "model": "gpt-5.6-terra",
+      "input": 0.8,
+      "output": 4.8,
+      "cached_input": 0.08,
+      "cache_create": 1,
+      "note": "自动采集 · CODEX",
+      "long_context": {
+        "input": 1.6,
+        "output": 7.2,
+        "cached_input": 0.2,
+        "cache_create": 2,
+        "tier": "long_context"
+      }
+    },
+    {
       "model": "gpt-5.5",
       "input": 1.6,
       "output": 9.6,
@@ -126,5 +141,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-09-15T16:08:13+08:00"
+  "updated_at_time": "2026-09-15T17:23:18+08:00"
 }
