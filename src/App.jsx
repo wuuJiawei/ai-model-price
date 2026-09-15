@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 import { trackEvent, trackProviderClick } from './analytics.js';
 import { AnimatedNumber } from './components/AnimatedNumber.jsx';
+import { SearchNavigator } from './components/SearchNavigator.jsx';
 import { Tooltip } from './components/Tooltip.jsx';
 import { ButtonLink } from './components/beui/Button.jsx';
 import { DataTable } from './components/beui/DataTable.jsx';
@@ -141,6 +142,7 @@ export default function App() {
         <div className="nav-meta">
           <Tooltip content={latestTime ? `最近一次价格更新时间：${latestTime}` : `更新时间：${data.data_updated_at || '—'}`}><span><Pill>更新时间 {data.data_updated_at || '—'}</Pill></span></Tooltip>
           <Pill>USD/CNY {fx}</Pill>
+          <SearchNavigator rows={rows} />
           <Tooltip content="查看 GitHub 仓库"><ButtonLink className="github-link" variant="outline" size="sm" href={GITHUB} target="_blank" rel="noreferrer" onClick={() => trackEvent('github_click', { destination: GITHUB })}><Github size={14}/> GitHub</ButtonLink></Tooltip>
         </div>
       </header>
@@ -175,7 +177,7 @@ export default function App() {
 
         {rows.length > 0 ? <>
           <section className="stats-grid"><StatCard label="最低综合成本" value={ranked[0].combined_cny} provider={`${ranked[0].model_name} · ${ranked[0].provider_name}`} currency={currency} fx={fx}/><StatCard label="最低输入价格" value={bestInput.input_cny} provider={`${bestInput.model_name} · ${bestInput.provider_name}`} currency={currency} fx={fx}/><StatCard label="最低输出价格" value={bestOutput.output_cny} provider={`${bestOutput.model_name} · ${bestOutput.provider_name}`} currency={currency} fx={fx}/></section>
-          <section className="panel table-panel"><div className="table-headline"><div><span className="eyebrow">PRICE TABLE</span><h2>{tableTitle}</h2>{isAllModels && <small>跨模型排名仅比较 Token 成本，不代表模型能力排序。</small>}</div><Pill>{rows.length} 个报价</Pill></div><DataTable rows={rows} columns={tableColumns} rowKey={r => `${r.model_id}-${r.provider_id}`} /></section>
+          <section className="panel table-panel"><div className="table-headline"><div><span className="eyebrow">PRICE TABLE</span><h2>{tableTitle}</h2>{isAllModels && <small>跨模型排名仅比较 Token 成本，不代表模型能力排序。</small>}</div><Pill>{rows.length} 个报价</Pill></div><DataTable rows={rows} columns={tableColumns} rowKey={r => `${r.model_id}-${r.provider_id}`} rowProps={r => ({ 'data-search-key': `${r.model_id}-${r.provider_id}` })} /></section>
         </> : <section className="panel empty-panel">当前筛选条件下暂时没有已录入的价格。</section>}
 
         <section className="pending-section"><div className="section-title"><div><span className="eyebrow">QUEUE</span><h2>待录入价格</h2></div><Pill>{pending.length} 家</Pill></div><div className="pending-grid">{pending.map((p,i) => <motion.a key={p.id} className="pending-card" href={p.website || '#'} target={p.website ? '_blank' : undefined} rel="noreferrer" onClick={() => trackProviderClick(p, undefined, 'pending')} initial={{opacity:0,y:6}} whileInView={{opacity:1,y:0}} whileHover={{y:-2}} viewport={{once:true}} transition={{delay:Math.min(i,8)*.025}}><div><strong>{p.name}</strong><span>{p.updated_at}</span></div><Pill>价格登记中</Pill><ExternalLink size={14}/></motion.a>)}</div></section>
