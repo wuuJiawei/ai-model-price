@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 // Lightweight adapter for this small dataset, following beUI Table's motion and
 // sticky-header interaction model without pulling in its 10k-row virtualization stack.
 // Reference: https://beui.dev/components/motion/table
-export function DataTable({ rows, columns, rowKey, className = '' }) {
+export function DataTable({ rows, columns, rowKey, rowProps, className = '' }) {
   const reduce = useReducedMotion();
   return (
     <div className={`beui-table-wrap ${className}`}>
@@ -19,6 +19,7 @@ export function DataTable({ rows, columns, rowKey, className = '' }) {
                 animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 exit={reduce ? undefined : { opacity: 0, y: -4, filter: 'blur(2px)' }}
                 transition={{ duration: 0.18 }}
+                {...(rowProps?.(row, index) || {})}
               >
                 {columns.map(c => <td key={c.key} className={c.className?.(row) || ''}>{c.cell ? c.cell(row, index) : row[c.key]}</td>)}
               </motion.tr>
