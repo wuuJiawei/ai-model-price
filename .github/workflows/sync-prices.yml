@@ -15,6 +15,7 @@ on:
       - 'scripts/sync-apinebula.mjs'
       - 'scripts/sync-apiplus.mjs'
       - 'scripts/sync-deepseek.mjs'
+      - 'scripts/sync-soleapi.mjs'
       - '.github/workflows/sync-prices.yml'
 
 permissions:
@@ -79,6 +80,11 @@ jobs:
         continue-on-error: true
         run: node scripts/sync-deepseek.mjs
 
+      - name: Fetch SoleAPI pricing
+        id: soleapi
+        continue-on-error: true
+        run: node scripts/sync-soleapi.mjs
+
       - name: Check sync results
         shell: bash
         run: |
@@ -90,6 +96,7 @@ jobs:
           echo "APINebula: ${{ steps.apinebula.outcome }}"
           echo "APIPlus: ${{ steps.apiplus.outcome }}"
           echo "DeepSeek: ${{ steps.deepseek.outcome }}"
+          echo "SoleAPI: ${{ steps.soleapi.outcome }}"
           if [[ "${{ steps.teamo.outcome }}" == "failure" && \
                 "${{ steps.code9527.outcome }}" == "failure" && \
                 "${{ steps.zeta.outcome }}" == "failure" && \
@@ -97,7 +104,8 @@ jobs:
                 "${{ steps.apikeyfun.outcome }}" == "failure" && \
                 "${{ steps.apinebula.outcome }}" == "failure" && \
                 "${{ steps.apiplus.outcome }}" == "failure" && \
-                "${{ steps.deepseek.outcome }}" == "failure" ]]; then
+                "${{ steps.deepseek.outcome }}" == "failure" && \
+                "${{ steps.soleapi.outcome }}" == "failure" ]]; then
             echo 'All pricing sync tasks failed.'
             exit 1
           fi
@@ -117,6 +125,7 @@ jobs:
             data/providers/apinebula.json
             data/providers/apiplus.json
             data/providers/deepseek.json
+            data/providers/soleapi.json
           )
           if git diff --quiet -- "${PROVIDERS[@]}"; then
             echo 'No relay pricing data changes.'
