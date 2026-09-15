@@ -4,7 +4,7 @@
   "website": "https://teamorouter.cn/?i=cedb848aa4",
   "currency": "USD",
   "updated_at": "2026-09-15",
-  "updated_at_time": "2026-09-15T15:52:16+08:00",
+  "updated_at_time": "2026-09-15T16:07:27+08:00",
   "source_url": "https://teamorouter.cn/zh#pricing",
   "auto_sync": {
     "enabled": true,
@@ -58,6 +58,12 @@
       "input": 1.33,
       "output": 6.65,
       "cached_input": 0.133
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "input": 0.435,
+      "output": 0.87,
+      "cached_input": 0.0036
     }
   ]
 }
