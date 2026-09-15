@@ -1,6 +1,7 @@
 import { ExternalLink, Github, RefreshCw } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
+import { trackEvent, trackProviderClick } from './analytics.js';
 import { AnimatedNumber } from './components/AnimatedNumber.jsx';
 import { Tooltip } from './components/Tooltip.jsx';
 import { ButtonLink } from './components/beui/Button.jsx';
@@ -99,7 +100,7 @@ export default function App() {
 
   const tableColumns = [
     { key:'rank', header:'#', width:'56px', cell:r => <span className="rank">{String(ranked.findIndex(x => x.provider_id === r.provider_id) + 1).padStart(2,'0')}</span> },
-    { key:'provider', header:'中转站', width:'190px', cell:r => <div className="provider-cell"><div><strong>{r.provider_name}</strong><small>{r.native_currency}</small></div>{r.website && <Tooltip content={`访问 ${r.provider_name}`}><ButtonLink className="visit" variant="outline" size="icon" href={r.website} target="_blank" rel="noreferrer" aria-label={`访问 ${r.provider_name}`}><ExternalLink size={14}/></ButtonLink></Tooltip>}</div> },
+    { key:'provider', header:'中转站', width:'190px', cell:r => <div className="provider-cell"><div><strong>{r.provider_name}</strong><small>{r.native_currency}</small></div>{r.website && <Tooltip content={`访问 ${r.provider_name}`}><ButtonLink className="visit" variant="outline" size="icon" href={r.website} target="_blank" rel="noreferrer" aria-label={`访问 ${r.provider_name}`} onClick={() => trackProviderClick(r, modelId)}><ExternalLink size={14}/></ButtonLink></Tooltip>}</div> },
     { key:'input', header:'输入 /1M', cell:r => <div className={r.input_cny === inputMin ? 'best' : ''}>{money(r.input_cny)}<small>原价 {r.native_currency === 'CNY' ? '¥' : '$'}{fmt(r.input_native)}</small></div> },
     { key:'output', header:'输出 /1M', cell:r => <div className={r.output_cny === outputMin ? 'best' : ''}>{money(r.output_cny)}<small>原价 {r.native_currency === 'CNY' ? '¥' : '$'}{fmt(r.output_native)}</small></div> },
     { key:'combined', header:'综合', cell:r => <span className={r.combined_cny === cheapest ? 'best' : ''}>{money(r.combined_cny)}</span> },
@@ -128,7 +129,7 @@ export default function App() {
         <div className="nav-meta">
           <Tooltip content={latestTime ? `最近一次价格更新时间：${latestTime}` : `更新时间：${data.data_updated_at || '—'}`}><span><Pill>更新时间 {data.data_updated_at || '—'}</Pill></span></Tooltip>
           <Pill>USD/CNY {fx}</Pill>
-          <Tooltip content="查看 GitHub 仓库"><ButtonLink className="github-link" variant="outline" size="sm" href={GITHUB} target="_blank" rel="noreferrer"><Github size={14}/> GitHub</ButtonLink></Tooltip>
+          <Tooltip content="查看 GitHub 仓库"><ButtonLink className="github-link" variant="outline" size="sm" href={GITHUB} target="_blank" rel="noreferrer" onClick={() => trackEvent('github_click', { destination: GITHUB })}><Github size={14}/> GitHub</ButtonLink></Tooltip>
         </div>
       </header>
 
@@ -138,22 +139,22 @@ export default function App() {
         <section className="panel filters">
           <div className="field field-wide">
             <label>厂商</label>
-            <Tabs value={vendor} onValueChange={setVendor} variant="segment"><TabsList>{[{id:'',name:'全部'}, ...(data.vendors || [])].map(v => <TabsTrigger key={v.id || 'all'} value={v.id}>{v.name}</TabsTrigger>)}</TabsList></Tabs>
+            <Tabs value={vendor} onValueChange={value => { setVendor(value); trackEvent('vendor_change', { vendor: value || 'all' }); }} variant="segment"><TabsList>{[{id:'',name:'全部'}, ...(data.vendors || [])].map(v => <TabsTrigger key={v.id || 'all'} value={v.id}>{v.name}</TabsTrigger>)}</TabsList></Tabs>
           </div>
           <div className="field">
             <label>模型</label>
-            <Select value={modelId} onValueChange={setModelId} disabled={!models.length}>
+            <Select value={modelId} onValueChange={value => { setModelId(value); trackEvent('model_change', { model_id: value, vendor }); }} disabled={!models.length}>
               <SelectTrigger><SelectValue placeholder="暂无模型" /></SelectTrigger>
               <SelectContent>{models.map(m => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="field">
             <label>币种</label>
-            <Tabs value={currency} onValueChange={setCurrency} variant="segment"><TabsList>{['CNY','USD'].map(c => <TabsTrigger key={c} value={c}>{c}</TabsTrigger>)}</TabsList></Tabs>
+            <Tabs value={currency} onValueChange={value => { setCurrency(value); trackEvent('currency_change', { currency: value }); }} variant="segment"><TabsList>{['CNY','USD'].map(c => <TabsTrigger key={c} value={c}>{c}</TabsTrigger>)}</TabsList></Tabs>
           </div>
           <div className="field">
             <label>排序</label>
-            <Select value={sort} onValueChange={setSort}>
+            <Select value={sort} onValueChange={value => { setSort(value); trackEvent('sort_change', { sort: value, model_id: modelId }); }}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent><SelectItem value="combined">综合成本</SelectItem><SelectItem value="input">输入价格</SelectItem><SelectItem value="output">输出价格</SelectItem><SelectItem value="name">平台名称</SelectItem></SelectContent>
             </Select>
@@ -165,7 +166,7 @@ export default function App() {
           <section className="panel table-panel"><div className="table-headline"><div><span className="eyebrow">PRICE TABLE</span><h2>{data.models.find(m => m.id === modelId)?.name}</h2></div><Pill>{rows.length} 个报价</Pill></div><DataTable rows={rows} columns={tableColumns} rowKey={r => `${modelId}-${r.provider_id}`} /></section>
         </> : <section className="panel empty-panel">这个厂商暂时还没有已录入的价格。</section>}
 
-        <section className="pending-section"><div className="section-title"><div><span className="eyebrow">QUEUE</span><h2>待录入价格</h2></div><Pill>{pending.length} 家</Pill></div><div className="pending-grid">{pending.map((p,i) => <motion.a key={p.id} className="pending-card" href={p.website || '#'} target={p.website ? '_blank' : undefined} rel="noreferrer" initial={{opacity:0,y:6}} whileInView={{opacity:1,y:0}} whileHover={{y:-2}} viewport={{once:true}} transition={{delay:Math.min(i,8)*.025}}><div><strong>{p.name}</strong><span>{p.updated_at}</span></div><Pill>价格登记中</Pill><ExternalLink size={14}/></motion.a>)}</div></section>
+        <section className="pending-section"><div className="section-title"><div><span className="eyebrow">QUEUE</span><h2>待录入价格</h2></div><Pill>{pending.length} 家</Pill></div><div className="pending-grid">{pending.map((p,i) => <motion.a key={p.id} className="pending-card" href={p.website || '#'} target={p.website ? '_blank' : undefined} rel="noreferrer" onClick={() => trackProviderClick(p, undefined, 'pending')} initial={{opacity:0,y:6}} whileInView={{opacity:1,y:0}} whileHover={{y:-2}} viewport={{once:true}} transition={{delay:Math.min(i,8)*.025}}><div><strong>{p.name}</strong><span>{p.updated_at}</span></div><Pill>价格登记中</Pill><ExternalLink size={14}/></motion.a>)}</div></section>
 
         <footer><span>DATA-DRIVEN · OPEN SOURCE · beUI</span><span>Generated {new Date(data.generated_at).toLocaleString()}</span></footer>
       </main>
