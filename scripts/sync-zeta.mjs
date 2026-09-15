@@ -21,6 +21,8 @@ const targets = new Map([
   ['claude-opus-4-6', ['Claude Opus 4.6', 'claude-opus-4-6']],
   ['claude-sonnet-4-6', ['Claude Sonnet 4.6', 'claude-sonnet-4-6']],
   ['claude-haiku-4-5', ['Claude Haiku 4.5', 'claude-haiku-4-5']],
+  ['deepseek-v4-flash', ['deepseek-v4-flash', 'DeepSeek V4 Flash']],
+  ['deepseek-v4-pro', ['deepseek-v4-pro', 'DeepSeek V4 Pro']],
 ]);
 
 function decodeHtml(html) {
@@ -61,8 +63,6 @@ function parseModel(text, labels) {
       if (index < 0) break;
       from = index + needle.length;
 
-      // Zeta 定价表每行依次为：Input / Output / Cache read / Cache write / Savings / List price。
-      // 当前我们只采集前三个 token 单价；后面的 cache write 与官方价不参与排名。
       const chunk = text.slice(index + label.length, index + label.length + 360);
       const prices = [...chunk.matchAll(/\$\s*([0-9]+(?:\.[0-9]+)?)/g)]
         .map(match => Number(match[1]));
