@@ -1,0 +1,28 @@
+{
+  "id": "deepseek",
+  "name": "DeepSeek 官方",
+  "website": "https://platform.deepseek.com/",
+  "currency": "CNY",
+  "updated_at": "2026-09-15",
+  "source_url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
+  "models": [
+    {
+      "model": "deepseek-v4-flash",
+      "input": 1,
+      "output": 2,
+      "cached_input": 0.02,
+      "note": "官方价 · 缓存未命中作为输入价"
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "input": 3,
+      "output": 6,
+      "cached_input": 0.025,
+      "note": "官方价 · 缓存未命中作为输入价"
+    }
+  ],
+  "auto_sync": {
+    "enabled": true,
+    "interval": "hourly"
+  }
+}
