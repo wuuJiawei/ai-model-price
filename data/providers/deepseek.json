@@ -9,20 +9,21 @@
     {
       "model": "deepseek-v4-flash",
       "input": 1,
-      "output": 2,
+      "output": 4,
       "cached_input": 0.02,
-      "note": "官方价 · 缓存未命中作为输入价"
+      "note": "自动采集 · DeepSeek 官方"
     },
     {
       "model": "deepseek-v4-pro",
-      "input": 3,
-      "output": 6,
-      "cached_input": 0.025,
-      "note": "官方价 · 缓存未命中作为输入价"
+      "input": 4.5,
+      "output": 13.5,
+      "cached_input": 0.15,
+      "note": "自动采集 · DeepSeek 官方"
     }
   ],
   "auto_sync": {
     "enabled": true,
     "interval": "hourly"
-  }
+  },
+  "updated_at_time": "2026-09-15T16:08:14+08:00"
 }
