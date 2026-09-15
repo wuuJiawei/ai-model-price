@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tabs, TabsList, TabsTrigger } from './components/beui/Tabs.jsx';
 
 const GITHUB = 'https://github.com/wuuJiawei/ai-model-price';
+const ALL_MODELS = 'all';
 
 function fmt(v) {
   if (v == null || Number.isNaN(v)) return '—';
@@ -53,8 +54,8 @@ function StatCard({ label, value, provider, currency, fx }) {
 export default function App() {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
-  const [vendor, setVendor] = useState('OpenAI');
-  const [modelId, setModelId] = useState('gpt-5.6-sol');
+  const [vendor, setVendor] = useState('');
+  const [modelId, setModelId] = useState(ALL_MODELS);
   const [currency, setCurrency] = useState('CNY');
   const [sort, setSort] = useState('combined');
 
@@ -66,18 +67,24 @@ export default function App() {
 
   const models = useMemo(() => data ? data.models.filter(m => !vendor || m.vendor === vendor) : [], [data, vendor]);
   useEffect(() => {
-    if (models.length && !models.some(m => m.id === modelId)) setModelId(models.find(m => m.id === 'gpt-5.6-sol')?.id || models[0].id);
+    if (modelId !== ALL_MODELS && models.length && !models.some(m => m.id === modelId)) {
+      setModelId(ALL_MODELS);
+    }
   }, [models, modelId]);
 
   const rows = useMemo(() => {
-    if (!data || !modelId) return [];
-    const list = data.rows.filter(x => x.model_id === modelId);
+    if (!data) return [];
+    const list = data.rows.filter(x => {
+      if (vendor && x.model_vendor !== vendor) return false;
+      if (modelId !== ALL_MODELS && x.model_id !== modelId) return false;
+      return true;
+    });
     return [...list].sort((a,b) => sort === 'name'
-      ? a.provider_name.localeCompare(b.provider_name, 'zh-CN')
+      ? a.provider_name.localeCompare(b.provider_name, 'zh-CN') || a.model_name.localeCompare(b.model_name, 'zh-CN')
       : sort === 'input' ? a.input_cny - b.input_cny
       : sort === 'output' ? a.output_cny - b.output_cny
       : a.combined_cny - b.combined_cny);
-  }, [data, modelId, sort]);
+  }, [data, vendor, modelId, sort]);
 
   const ranked = useMemo(() => [...rows].sort((a,b) => a.combined_cny - b.combined_cny), [rows]);
   const cheapest = ranked[0]?.combined_cny ?? 0;
@@ -88,6 +95,7 @@ export default function App() {
   const pending = data?.providers.filter(p => p.status === 'pending') || [];
   const fx = data?.fx.usd_cny || 1;
   const latestTime = formatUpdateTime(data?.data_updated_at_time);
+  const isAllModels = modelId === ALL_MODELS;
 
   const money = cny => {
     if (cny == null) return '—';
@@ -98,9 +106,11 @@ export default function App() {
   if (error) return <div className="state-screen">数据加载失败：{error}</div>;
   if (!data) return <div className="state-screen"><span className="loader-dot" /> 正在加载价格数据</div>;
 
+  const rankOf = r => ranked.findIndex(x => x.provider_id === r.provider_id && x.model_id === r.model_id) + 1;
   const tableColumns = [
-    { key:'rank', header:'#', width:'56px', cell:r => <span className="rank">{String(ranked.findIndex(x => x.provider_id === r.provider_id) + 1).padStart(2,'0')}</span> },
-    { key:'provider', header:'中转站', width:'190px', cell:r => <div className="provider-cell"><div><strong>{r.provider_name}</strong><small>{r.native_currency}</small></div>{r.website && <Tooltip content={`访问 ${r.provider_name}`}><ButtonLink className="visit" variant="outline" size="icon" href={r.website} target="_blank" rel="noreferrer" aria-label={`访问 ${r.provider_name}`} onClick={() => trackProviderClick(r, modelId)}><ExternalLink size={14}/></ButtonLink></Tooltip>}</div> },
+    { key:'rank', header:'#', width:'56px', cell:r => <span className="rank">{String(rankOf(r)).padStart(2,'0')}</span> },
+    ...(isAllModels ? [{ key:'model', header:'模型', width:'190px', cell:r => <div><strong>{r.model_name}</strong><small>{r.model_vendor}</small></div> }] : []),
+    { key:'provider', header:'中转站', width:'190px', cell:r => <div className="provider-cell"><div><strong>{r.provider_name}</strong><small>{r.native_currency}</small></div>{r.website && <Tooltip content={`访问 ${r.provider_name}`}><ButtonLink className="visit" variant="outline" size="icon" href={r.website} target="_blank" rel="noreferrer" aria-label={`访问 ${r.provider_name}`} onClick={() => trackProviderClick(r, r.model_id)}><ExternalLink size={14}/></ButtonLink></Tooltip>}</div> },
     { key:'input', header:'输入 /1M', cell:r => <div className={r.input_cny === inputMin ? 'best' : ''}>{money(r.input_cny)}<small>原价 {r.native_currency === 'CNY' ? '¥' : '$'}{fmt(r.input_native)}</small></div> },
     { key:'output', header:'输出 /1M', cell:r => <div className={r.output_cny === outputMin ? 'best' : ''}>{money(r.output_cny)}<small>原价 {r.native_currency === 'CNY' ? '¥' : '$'}{fmt(r.output_native)}</small></div> },
     { key:'combined', header:'综合', cell:r => <span className={r.combined_cny === cheapest ? 'best' : ''}>{money(r.combined_cny)}</span> },
@@ -111,6 +121,8 @@ export default function App() {
       return <div className="update-cell">{r.auto_sync && <Tooltip content={autoSyncText(r.auto_sync_interval)}><span className="auto-sync-mark"><RefreshCw size={13}/></span></Tooltip>}<Tooltip content={full ? `更新时间：${full}` : `更新时间：${r.updated_at}`}><span className="update-date">{r.updated_at}</span></Tooltip></div>;
     }}
   ];
+
+  const tableTitle = isAllModels ? (vendor ? `${vendor} · 全部模型` : '全部模型') : data.models.find(m => m.id === modelId)?.name;
 
   return (
     <div className="page-shell">
@@ -143,9 +155,9 @@ export default function App() {
           </div>
           <div className="field">
             <label>模型</label>
-            <Select value={modelId} onValueChange={value => { setModelId(value); trackEvent('model_change', { model_id: value, vendor }); }} disabled={!models.length}>
+            <Select value={modelId} onValueChange={value => { setModelId(value); trackEvent('model_change', { model_id: value, vendor: vendor || 'all' }); }} disabled={!models.length}>
               <SelectTrigger><SelectValue placeholder="暂无模型" /></SelectTrigger>
-              <SelectContent>{models.map(m => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}</SelectContent>
+              <SelectContent><SelectItem value={ALL_MODELS}>全部模型</SelectItem>{models.map(m => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="field">
@@ -162,9 +174,9 @@ export default function App() {
         </section>
 
         {rows.length > 0 ? <>
-          <section className="stats-grid"><StatCard label="最低综合成本" value={ranked[0].combined_cny} provider={ranked[0].provider_name} currency={currency} fx={fx}/><StatCard label="最低输入价格" value={bestInput.input_cny} provider={bestInput.provider_name} currency={currency} fx={fx}/><StatCard label="最低输出价格" value={bestOutput.output_cny} provider={bestOutput.provider_name} currency={currency} fx={fx}/></section>
-          <section className="panel table-panel"><div className="table-headline"><div><span className="eyebrow">PRICE TABLE</span><h2>{data.models.find(m => m.id === modelId)?.name}</h2></div><Pill>{rows.length} 个报价</Pill></div><DataTable rows={rows} columns={tableColumns} rowKey={r => `${modelId}-${r.provider_id}`} /></section>
-        </> : <section className="panel empty-panel">这个厂商暂时还没有已录入的价格。</section>}
+          <section className="stats-grid"><StatCard label="最低综合成本" value={ranked[0].combined_cny} provider={`${ranked[0].model_name} · ${ranked[0].provider_name}`} currency={currency} fx={fx}/><StatCard label="最低输入价格" value={bestInput.input_cny} provider={`${bestInput.model_name} · ${bestInput.provider_name}`} currency={currency} fx={fx}/><StatCard label="最低输出价格" value={bestOutput.output_cny} provider={`${bestOutput.model_name} · ${bestOutput.provider_name}`} currency={currency} fx={fx}/></section>
+          <section className="panel table-panel"><div className="table-headline"><div><span className="eyebrow">PRICE TABLE</span><h2>{tableTitle}</h2>{isAllModels && <small>跨模型排名仅比较 Token 成本，不代表模型能力排序。</small>}</div><Pill>{rows.length} 个报价</Pill></div><DataTable rows={rows} columns={tableColumns} rowKey={r => `${r.model_id}-${r.provider_id}`} /></section>
+        </> : <section className="panel empty-panel">当前筛选条件下暂时没有已录入的价格。</section>}
 
         <section className="pending-section"><div className="section-title"><div><span className="eyebrow">QUEUE</span><h2>待录入价格</h2></div><Pill>{pending.length} 家</Pill></div><div className="pending-grid">{pending.map((p,i) => <motion.a key={p.id} className="pending-card" href={p.website || '#'} target={p.website ? '_blank' : undefined} rel="noreferrer" onClick={() => trackProviderClick(p, undefined, 'pending')} initial={{opacity:0,y:6}} whileInView={{opacity:1,y:0}} whileHover={{y:-2}} viewport={{once:true}} transition={{delay:Math.min(i,8)*.025}}><div><strong>{p.name}</strong><span>{p.updated_at}</span></div><Pill>价格登记中</Pill><ExternalLink size={14}/></motion.a>)}</div></section>
 
