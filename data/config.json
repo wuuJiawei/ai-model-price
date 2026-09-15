@@ -5,6 +5,7 @@
   "vendors": [
     { "id": "OpenAI", "name": "OpenAI" },
     { "id": "Anthropic", "name": "Anthropic" },
-    { "id": "Google", "name": "Gemini (Google)" }
+    { "id": "Google", "name": "Gemini (Google)" },
+    { "id": "DeepSeek", "name": "DeepSeek" }
   ]
 }
