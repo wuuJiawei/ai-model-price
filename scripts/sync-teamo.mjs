@@ -20,7 +20,9 @@ const targets = new Map([
   ['Claude Opus 4.7', 'claude-opus-4-7'],
   ['Claude Opus 4.6', 'claude-opus-4-6'],
   ['Claude Sonnet 4.6', 'claude-sonnet-4-6'],
-  ['Claude Haiku 4.5', 'claude-haiku-4-5']
+  ['Claude Haiku 4.5', 'claude-haiku-4-5'],
+  ['DeepSeek V4 Flash', 'deepseek-v4-flash'],
+  ['DeepSeek V4 Pro', 'deepseek-v4-pro']
 ]);
 
 function decodeHtml(html) {
@@ -131,8 +133,6 @@ if (found === 0) {
 provider.source_url = PRICE_URL;
 provider.auto_sync = { enabled: true, interval: 'hourly' };
 
-// 只要本次抓取和解析成功，就记录最后成功同步时间。
-// 即使价格没有变化，页面也应该展示真实的自动校验时间。
 const updatedAtTime = shanghaiDateTime();
 provider.updated_at = updatedAtTime.slice(0, 10);
 provider.updated_at_time = updatedAtTime;
