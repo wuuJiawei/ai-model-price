@@ -88,5 +88,17 @@
     "name": "Claude Haiku 4.5",
     "vendor": "Anthropic",
     "aliases": ["claude-haiku-4-5"]
+  },
+  {
+    "id": "deepseek-v4-flash",
+    "name": "DeepSeek V4 Flash",
+    "vendor": "DeepSeek",
+    "aliases": ["deepseek-v4-flash", "DeepSeek V4 Flash", "DeepSeek-V4-Flash-0731"]
+  },
+  {
+    "id": "deepseek-v4-pro",
+    "name": "DeepSeek V4 Pro",
+    "vendor": "DeepSeek",
+    "aliases": ["deepseek-v4-pro", "DeepSeek V4 Pro", "DeepSeek-V4-Pro"]
   }
 ]
