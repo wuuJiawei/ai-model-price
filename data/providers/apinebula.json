@@ -8,59 +8,44 @@
   "models": [
     {
       "model": "gpt-6-astra",
-      "input": 4,
-      "output": 20,
-      "cached_input": 0.4,
-      "cache_create": 5,
+      "input": 3.7,
+      "output": 18.5,
+      "cached_input": 0.37,
+      "cache_create": 4.625,
       "note": "自动采集 · CODEX",
       "long_context": {
-        "input": 8,
-        "output": 30,
-        "cached_input": 0.8,
-        "cache_create": 10,
+        "input": 7.4,
+        "output": 27.75,
+        "cached_input": 0.74,
+        "cache_create": 9.25,
         "tier": "long_context"
       }
     },
     {
       "model": "gpt-5.6-sol",
-      "input": 2,
-      "output": 12,
-      "cached_input": 0.2,
-      "cache_create": 2.5,
+      "input": 1.85,
+      "output": 11.1,
+      "cached_input": 0.185,
+      "cache_create": 2.3125,
       "note": "自动采集 · CODEX",
       "long_context": {
-        "input": 4,
-        "output": 18,
-        "cached_input": 0.4,
-        "cache_create": 5,
-        "tier": "long_context"
-      }
-    },
-    {
-      "model": "gpt-5.6-terra",
-      "input": 0.8,
-      "output": 4.8,
-      "cached_input": 0.08,
-      "cache_create": 1,
-      "note": "自动采集 · CODEX",
-      "long_context": {
-        "input": 1.6,
-        "output": 7.2,
-        "cached_input": 0.2,
-        "cache_create": 2,
+        "input": 3.7,
+        "output": 16.65,
+        "cached_input": 0.37,
+        "cache_create": 4.625,
         "tier": "long_context"
       }
     },
     {
       "model": "gpt-5.5",
-      "input": 1.6,
-      "output": 9.6,
-      "cached_input": 0.2,
+      "input": 1.85,
+      "output": 11.1,
+      "cached_input": 0.185,
       "note": "自动采集 · CODEX",
       "long_context": {
-        "input": 3.2,
-        "output": 14,
-        "cached_input": 0.4,
+        "input": 3.7,
+        "output": 16.65,
+        "cached_input": 0.37,
         "tier": "long_context"
       }
     },
@@ -141,5 +126,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-09-16T08:29:03+08:00"
+  "updated_at_time": "2026-09-16T14:09:15+08:00"
 }
