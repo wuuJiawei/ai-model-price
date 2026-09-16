@@ -3,7 +3,7 @@
   "name": "APINebula",
   "website": "https://apinebula.ai/VjM74M",
   "currency": "CNY",
-  "updated_at": "2026-09-16",
+  "updated_at": "2026-09-17",
   "source_url": "https://apinebula.ai/zh/fee",
   "models": [
     {
@@ -33,6 +33,21 @@
         "output": 16.65,
         "cached_input": 0.37,
         "cache_create": 4.625,
+        "tier": "long_context"
+      }
+    },
+    {
+      "model": "gpt-5.6-terra",
+      "input": 0.74,
+      "output": 4.44,
+      "cached_input": 0.074,
+      "cache_create": 0.925,
+      "note": "自动采集 · CODEX",
+      "long_context": {
+        "input": 1.48,
+        "output": 6.66,
+        "cached_input": 0.185,
+        "cache_create": 1.85,
         "tier": "long_context"
       }
     },
@@ -126,5 +141,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-09-16T19:48:09+08:00"
+  "updated_at_time": "2026-09-17T01:07:38+08:00"
 }

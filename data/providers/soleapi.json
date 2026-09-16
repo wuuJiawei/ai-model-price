@@ -3,7 +3,7 @@
   "name": "SoleAPI",
   "website": "https://soleapi.com/r/ccswitch",
   "currency": "CNY",
-  "updated_at": "2026-09-16",
+  "updated_at": "2026-09-17",
   "source_url": "https://soleapi.com/zh/models",
   "models": [
     {
@@ -116,5 +116,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-09-16T19:48:10+08:00"
+  "updated_at_time": "2026-09-17T01:07:39+08:00"
 }
