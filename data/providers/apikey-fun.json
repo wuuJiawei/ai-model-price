@@ -8,31 +8,31 @@
   "models": [
     {
       "model": "gpt-6-astra",
-      "input": 6,
-      "output": 30,
-      "cached_input": 0.6,
-      "cache_create": 7.5,
+      "input": 8,
+      "output": 40,
+      "cached_input": 0.8,
+      "cache_create": 10,
       "note": "自动采集 · Codex Pro（外接版）"
     },
     {
       "model": "gpt-5.6-sol",
-      "input": 3,
-      "output": 18,
-      "cached_input": 0.3,
+      "input": 4,
+      "output": 24,
+      "cached_input": 0.4,
       "note": "自动采集 · Codex Pro（外接版）"
     },
     {
       "model": "gpt-5.6-terra",
-      "input": 1.2,
-      "output": 7.2,
-      "cached_input": 0.12,
+      "input": 1.6,
+      "output": 9.6,
+      "cached_input": 0.16,
       "note": "自动采集 · Codex Pro（外接版）"
     },
     {
       "model": "gpt-5.5",
-      "input": 3,
-      "output": 18,
-      "cached_input": 0.3,
+      "input": 4,
+      "output": 24,
+      "cached_input": 0.4,
       "note": "自动采集 · Codex Pro（外接版）"
     },
     {
@@ -112,5 +112,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-09-17T07:01:42+08:00"
+  "updated_at_time": "2026-09-17T09:31:13+08:00"
 }
