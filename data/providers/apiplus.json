@@ -21,13 +21,6 @@
       "note": "自动采集 · gpt-pro-tj"
     },
     {
-      "model": "gpt-5.6-terra",
-      "input": 3,
-      "output": 18,
-      "cached_input": 0.3,
-      "note": "自动采集 · vip"
-    },
-    {
       "model": "gpt-5.5",
       "input": 1.5,
       "output": 9,
@@ -101,5 +94,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-09-21T14:30:51+08:00"
+  "updated_at_time": "2026-09-21T22:19:15+08:00"
 }
