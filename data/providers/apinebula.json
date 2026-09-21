@@ -3,49 +3,49 @@
   "name": "APINebula",
   "website": "https://apinebula.ai/VjM74M",
   "currency": "CNY",
-  "updated_at": "2026-09-21",
+  "updated_at": "2026-09-22",
   "source_url": "https://apinebula.ai/zh/fee",
   "models": [
     {
       "model": "gpt-6-astra",
-      "input": 3.7,
-      "output": 18.5,
-      "cached_input": 0.37,
-      "cache_create": 4.625,
+      "input": 3.9,
+      "output": 19.5,
+      "cached_input": 0.39,
+      "cache_create": 4.875,
       "note": "自动采集 · CODEX",
       "long_context": {
-        "input": 7.4,
-        "output": 27.75,
-        "cached_input": 0.74,
-        "cache_create": 9.25,
+        "input": 7.8,
+        "output": 29.25,
+        "cached_input": 0.78,
+        "cache_create": 9.75,
         "tier": "long_context"
       }
     },
     {
       "model": "gpt-5.6-sol",
-      "input": 1.85,
-      "output": 11.1,
-      "cached_input": 0.185,
-      "cache_create": 2.3125,
+      "input": 1.95,
+      "output": 11.7,
+      "cached_input": 0.195,
+      "cache_create": 2.4375,
       "note": "自动采集 · CODEX",
       "long_context": {
-        "input": 3.7,
-        "output": 16.65,
-        "cached_input": 0.37,
-        "cache_create": 4.625,
+        "input": 3.9,
+        "output": 17.55,
+        "cached_input": 0.39,
+        "cache_create": 4.875,
         "tier": "long_context"
       }
     },
     {
       "model": "gpt-5.5",
-      "input": 1.85,
-      "output": 11.1,
-      "cached_input": 0.185,
+      "input": 1.95,
+      "output": 11.7,
+      "cached_input": 0.195,
       "note": "自动采集 · CODEX",
       "long_context": {
-        "input": 3.7,
-        "output": 16.65,
-        "cached_input": 0.37,
+        "input": 3.9,
+        "output": 17.55,
+        "cached_input": 0.39,
         "tier": "long_context"
       }
     },
@@ -126,5 +126,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-09-21T22:19:15+08:00"
+  "updated_at_time": "2026-09-22T03:34:38+08:00"
 }
