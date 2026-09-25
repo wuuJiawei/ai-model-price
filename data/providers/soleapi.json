@@ -36,9 +36,9 @@
     },
     {
       "model": "claude-opus-5",
-      "input": 3.5,
-      "output": 17.5,
-      "cached_input": 0.35,
+      "input": 2.5,
+      "output": 12.5,
+      "cached_input": 0.25,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
@@ -57,58 +57,58 @@
     },
     {
       "model": "claude-sonnet-5",
-      "input": 1.4,
-      "output": 7,
-      "cached_input": 0.14,
+      "input": 1,
+      "output": 5,
+      "cached_input": 0.1,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "claude-opus-4-8",
-      "input": 3.5,
-      "output": 17.5,
-      "cached_input": 0.35,
+      "input": 2.5,
+      "output": 12.5,
+      "cached_input": 0.25,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "claude-opus-4-7",
-      "input": 3.5,
-      "output": 17.5,
-      "cached_input": 0.35,
+      "input": 2.5,
+      "output": 12.5,
+      "cached_input": 0.25,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "claude-opus-4-6",
-      "input": 3.5,
-      "output": 17.5,
-      "cached_input": 0.35,
+      "input": 2.5,
+      "output": 12.5,
+      "cached_input": 0.25,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "claude-sonnet-4-6",
-      "input": 2.1,
-      "output": 10.5,
-      "cached_input": 0.21,
+      "input": 1.5,
+      "output": 7.5,
+      "cached_input": 0.15,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "claude-haiku-4-5",
-      "input": 0.7,
-      "output": 3.5,
-      "cached_input": 0.07,
+      "input": 0.5,
+      "output": 2.5,
+      "cached_input": 0.05,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "deepseek-v4-flash",
-      "input": 1.3,
-      "output": 5.2,
-      "cached_input": 0.026,
+      "input": 0.65,
+      "output": 2.6,
+      "cached_input": 0.013,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "deepseek-v4-pro",
-      "input": 5.85,
-      "output": 17.55,
-      "cached_input": 0.195,
+      "input": 2.93,
+      "output": 8.78,
+      "cached_input": 0.0975,
       "note": "自动采集 · SoleAPI 模型页"
     }
   ],
@@ -116,5 +116,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-09-25T15:57:39+08:00"
+  "updated_at_time": "2026-09-25T21:55:58+08:00"
 }
