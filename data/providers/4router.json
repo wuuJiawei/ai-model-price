@@ -3,7 +3,7 @@
   "name": "4Router",
   "website": "https://4router.net/pricing",
   "currency": "USD",
-  "updated_at": "2026-09-30",
+  "updated_at": "2026-10-01",
   "source_url": "https://4router.net/pricing",
   "models": [
     {
@@ -47,6 +47,13 @@
       "output": 11.25,
       "cached_input": 0.225,
       "note": "自动采集 · cheapClaude"
+    },
+    {
+      "model": "claude-fable-5-1",
+      "input": 30,
+      "output": 150,
+      "cached_input": 0.75,
+      "note": "自动采集 · ClaudeApiV"
     },
     {
       "model": "claude-fable-5",
@@ -95,5 +102,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-09-30T21:53:50+08:00"
+  "updated_at_time": "2026-10-01T03:28:28+08:00"
 }
