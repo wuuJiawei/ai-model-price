@@ -3,7 +3,7 @@
   "name": "APINebula",
   "website": "https://apinebula.ai/VjM74M",
   "currency": "CNY",
-  "updated_at": "2026-10-01",
+  "updated_at": "2026-10-02",
   "source_url": "https://apinebula.ai/zh/fee",
   "models": [
     {
@@ -141,5 +141,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-10-01T21:31:03+08:00"
+  "updated_at_time": "2026-10-02T03:37:09+08:00"
 }
