@@ -37,6 +37,19 @@
       }
     },
     {
+      "model": "gpt-5.5",
+      "input": 1.95,
+      "output": 11.7,
+      "cached_input": 0.195,
+      "note": "自动采集 · CODEX",
+      "long_context": {
+        "input": 3.9,
+        "output": 17.55,
+        "cached_input": 0.39,
+        "tier": "long_context"
+      }
+    },
+    {
       "model": "claude-opus-5",
       "input": 12,
       "output": 60,
@@ -113,5 +126,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-10-05T09:02:14+08:00"
+  "updated_at_time": "2026-10-05T15:11:30+08:00"
 }
