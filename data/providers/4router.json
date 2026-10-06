@@ -3,7 +3,7 @@
   "name": "4Router",
   "website": "https://4router.net/pricing",
   "currency": "USD",
-  "updated_at": "2026-10-06",
+  "updated_at": "2026-10-07",
   "source_url": "https://4router.net/pricing",
   "models": [
     {
@@ -102,5 +102,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-10-06T18:31:37+08:00"
+  "updated_at_time": "2026-10-07T01:17:06+08:00"
 }
