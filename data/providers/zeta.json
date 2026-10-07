@@ -3,7 +3,7 @@
   "name": "ZetaAPI",
   "website": "https://zetaapi.ai/go/u117",
   "currency": "USD",
-  "updated_at": "2026-10-07",
+  "updated_at": "2026-10-08",
   "source_url": "https://www.zetaapi.ai/en/pricing/",
   "models": [
     {
@@ -116,5 +116,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-10-07T16:50:42+08:00"
+  "updated_at_time": "2026-10-08T00:38:51+08:00"
 }
