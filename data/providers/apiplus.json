@@ -39,10 +39,10 @@
     },
     {
       "model": "claude-sonnet-5",
-      "input": 1.5,
-      "output": 7.5,
-      "cached_input": 0.15,
-      "cache_create": 1.875,
+      "input": 1,
+      "output": 5,
+      "cached_input": 0.1,
+      "cache_create": 1.25,
       "note": "自动采集 · super_c"
     },
     {
@@ -82,5 +82,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-10-11T17:02:45+08:00"
+  "updated_at_time": "2026-10-11T23:48:08+08:00"
 }
