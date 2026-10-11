@@ -3,7 +3,7 @@
   "name": "APIPlus",
   "website": "https://www.aiapisplus.com/register?aff=hftz",
   "currency": "CNY",
-  "updated_at": "2026-10-11",
+  "updated_at": "2026-10-12",
   "source_url": "https://www.aiapisplus.com/pricing",
   "models": [
     {
@@ -35,6 +35,13 @@
       "output": 12.5,
       "cached_input": 0.25,
       "cache_create": 3.125,
+      "note": "自动采集 · super_c"
+    },
+    {
+      "model": "claude-fable-5",
+      "input": 5,
+      "output": 25,
+      "cached_input": 0.5,
       "note": "自动采集 · super_c"
     },
     {
@@ -82,5 +89,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-10-11T23:48:08+08:00"
+  "updated_at_time": "2026-10-12T04:22:49+08:00"
 }
