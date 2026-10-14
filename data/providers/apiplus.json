@@ -3,7 +3,7 @@
   "name": "APIPlus",
   "website": "https://www.aiapisplus.com/register?aff=hftz",
   "currency": "CNY",
-  "updated_at": "2026-10-14",
+  "updated_at": "2026-10-15",
   "source_url": "https://www.aiapisplus.com/pricing",
   "models": [
     {
@@ -20,13 +20,6 @@
       "output": 9,
       "cached_input": 0.15,
       "cache_create": 1.875,
-      "note": "自动采集 · gpt-pro-tj"
-    },
-    {
-      "model": "gpt-5.5",
-      "input": 1.5,
-      "output": 9,
-      "cached_input": 0.15,
       "note": "自动采集 · gpt-pro-tj"
     },
     {
@@ -96,5 +89,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-10-14T15:47:04+08:00"
+  "updated_at_time": "2026-10-15T02:43:30+08:00"
 }
