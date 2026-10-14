@@ -29,9 +29,9 @@
     },
     {
       "model": "gpt-5.6-luna",
-      "input": 0.46,
-      "output": 2.76,
-      "cached_input": 0.046,
+      "input": 0.5,
+      "output": 3,
+      "cached_input": 0.05,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
@@ -123,5 +123,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-10-14T09:59:33+08:00"
+  "updated_at_time": "2026-10-14T15:47:06+08:00"
 }
