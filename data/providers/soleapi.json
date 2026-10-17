@@ -36,9 +36,9 @@
     },
     {
       "model": "gpt-5.5",
-      "input": 1.5,
-      "output": 9,
-      "cached_input": 0.15,
+      "input": 12.5,
+      "output": 75,
+      "cached_input": 1.25,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
@@ -123,5 +123,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-10-17T13:41:10+08:00"
+  "updated_at_time": "2026-10-17T18:56:07+08:00"
 }
