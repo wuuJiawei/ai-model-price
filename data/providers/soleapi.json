@@ -3,7 +3,7 @@
   "name": "SoleAPI",
   "website": "https://soleapi.com/r/t4zct6y5",
   "currency": "CNY",
-  "updated_at": "2026-10-25",
+  "updated_at": "2026-10-26",
   "source_url": "https://soleapi.com/zh/models",
   "models": [
     {
@@ -123,5 +123,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-10-25T19:45:18+08:00"
+  "updated_at_time": "2026-10-26T00:33:49+08:00"
 }
