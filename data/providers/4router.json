@@ -8,31 +8,31 @@
   "models": [
     {
       "model": "gpt-6-astra",
-      "input": 4.5,
-      "output": 22.5,
-      "cached_input": 0.45,
-      "note": "自动采集 · GptPro"
+      "input": 28,
+      "output": 140,
+      "cached_input": 2.8,
+      "note": "自动采集 · GptApi"
     },
     {
       "model": "gpt-5.6-sol",
-      "input": 1.8,
-      "output": 9,
-      "cached_input": 0.18,
-      "note": "自动采集 · GptPro"
+      "input": 11.2,
+      "output": 56,
+      "cached_input": 1.12,
+      "note": "自动采集 · GptApi"
     },
     {
       "model": "gpt-5.6-terra",
-      "input": 0.9,
-      "output": 5.4,
-      "cached_input": 0.09,
-      "note": "自动采集 · GptPro"
+      "input": 5.6,
+      "output": 33.6,
+      "cached_input": 0.56,
+      "note": "自动采集 · GptApi"
     },
     {
       "model": "gpt-5.6-luna",
-      "input": 0.09,
-      "output": 0.54,
-      "cached_input": 0.009,
-      "note": "自动采集 · GptPro"
+      "input": 0.56,
+      "output": 3.36,
+      "cached_input": 0.056,
+      "note": "自动采集 · GptApi"
     },
     {
       "model": "gpt-5.5",
@@ -102,5 +102,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-10-27T14:24:30+08:00"
+  "updated_at_time": "2026-10-27T21:21:32+08:00"
 }
