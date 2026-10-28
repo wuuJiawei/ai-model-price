@@ -31,18 +31,11 @@
       "note": "自动采集 · super_c"
     },
     {
-      "model": "claude-fable-5-1",
-      "input": 18,
-      "output": 90,
-      "cached_input": 0.45,
-      "note": "自动采集 · ccmax-tj"
-    },
-    {
       "model": "claude-fable-5",
-      "input": 18,
-      "output": 90,
-      "cached_input": 1.8,
-      "note": "自动采集 · ccmax-tj"
+      "input": 5,
+      "output": 25,
+      "cached_input": 0.5,
+      "note": "自动采集 · super_c"
     },
     {
       "model": "claude-sonnet-5",
@@ -89,5 +82,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-10-28T10:23:05+08:00"
+  "updated_at_time": "2026-10-28T16:46:19+08:00"
 }
