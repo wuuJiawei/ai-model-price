@@ -64,9 +64,9 @@
     },
     {
       "model": "claude-sonnet-5",
-      "input": 4.35,
-      "output": 21.75,
-      "cached_input": 0.435,
+      "input": 2.9,
+      "output": 14.5,
+      "cached_input": 0.29,
       "note": "自动采集 · claude-特惠活动"
     },
     {
@@ -109,5 +109,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-10-31T17:48:27+08:00"
+  "updated_at_time": "2026-10-31T23:47:09+08:00"
 }
