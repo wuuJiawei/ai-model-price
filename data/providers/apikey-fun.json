@@ -3,7 +3,7 @@
   "name": "APIKEY.FUN",
   "website": "https://apikey.fun/register?aff=CCSwitch",
   "currency": "CNY",
-  "updated_at": "2026-11-02",
+  "updated_at": "2026-11-03",
   "source_url": "https://apikey.fun/pricing",
   "models": [
     {
@@ -105,5 +105,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-11-02T19:25:53+08:00"
+  "updated_at_time": "2026-11-03T05:47:41+08:00"
 }
