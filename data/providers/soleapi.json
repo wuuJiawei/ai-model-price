@@ -29,16 +29,16 @@
     },
     {
       "model": "gpt-5.6-luna",
-      "input": 0.1,
-      "output": 0.6,
-      "cached_input": 0.01,
+      "input": 0.5,
+      "output": 3,
+      "cached_input": 0.05,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "gpt-5.5",
-      "input": 2.5,
-      "output": 15,
-      "cached_input": 0.25,
+      "input": 12.5,
+      "output": 75,
+      "cached_input": 1.25,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
@@ -123,5 +123,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-11-07T07:16:25+08:00"
+  "updated_at_time": "2026-11-07T10:54:33+08:00"
 }
