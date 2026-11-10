@@ -4,7 +4,7 @@
   "website": "https://teamorouter.cn/?i=cedb848aa4",
   "currency": "USD",
   "updated_at": "2026-11-10",
-  "updated_at_time": "2026-11-10T09:38:31+08:00",
+  "updated_at_time": "2026-11-10T18:00:28+08:00",
   "source_url": "https://teamorouter.cn/zh#pricing",
   "auto_sync": {
     "enabled": true,
@@ -61,14 +61,14 @@
     },
     {
       "model": "deepseek-v4-pro",
-      "input": 1.122,
-      "output": 3.366,
-      "cached_input": 0.0374
+      "input": 1.479,
+      "output": 2.958,
+      "cached_input": 0.1233
     },
     {
       "model": "deepseek-v4-flash",
-      "input": 0.3744,
-      "output": 1.1233,
+      "input": 0.3753,
+      "output": 1.126,
       "cached_input": 0.0119
     }
   ]

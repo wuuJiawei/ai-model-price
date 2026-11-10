@@ -99,9 +99,9 @@
     },
     {
       "model": "claude-haiku-4-5",
-      "input": 0.5,
-      "output": 2.5,
-      "cached_input": 0.05,
+      "input": 1.5,
+      "output": 7.5,
+      "cached_input": 0.15,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
@@ -123,5 +123,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-11-10T09:38:34+08:00"
+  "updated_at_time": "2026-11-10T18:00:31+08:00"
 }
