@@ -3,7 +3,7 @@
   "name": "SoleAPI",
   "website": "https://soleapi.com/r/t4zct6y5",
   "currency": "CNY",
-  "updated_at": "2026-11-11",
+  "updated_at": "2026-11-12",
   "source_url": "https://soleapi.com/zh/models",
   "models": [
     {
@@ -43,58 +43,58 @@
     },
     {
       "model": "claude-opus-5",
-      "input": 1,
-      "output": 5,
-      "cached_input": 0.1,
+      "input": 2.5,
+      "output": 12.5,
+      "cached_input": 0.25,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "claude-fable-5-1",
-      "input": 2,
-      "output": 10,
-      "cached_input": 0.05,
+      "input": 15,
+      "output": 75,
+      "cached_input": 0.375,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "claude-fable-5",
-      "input": 2,
-      "output": 10,
-      "cached_input": 0.2,
+      "input": 15,
+      "output": 75,
+      "cached_input": 1.5,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "claude-sonnet-5",
-      "input": 0.4,
-      "output": 2,
-      "cached_input": 0.04,
+      "input": 1,
+      "output": 5,
+      "cached_input": 0.1,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "claude-opus-4-8",
-      "input": 1,
-      "output": 5,
-      "cached_input": 0.1,
+      "input": 2.5,
+      "output": 12.5,
+      "cached_input": 0.25,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "claude-opus-4-7",
-      "input": 1,
-      "output": 5,
-      "cached_input": 0.1,
+      "input": 2.5,
+      "output": 12.5,
+      "cached_input": 0.25,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "claude-opus-4-6",
-      "input": 1,
-      "output": 5,
-      "cached_input": 0.1,
+      "input": 2.5,
+      "output": 12.5,
+      "cached_input": 0.25,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "claude-sonnet-4-6",
-      "input": 0.6,
-      "output": 3,
-      "cached_input": 0.06,
+      "input": 1.5,
+      "output": 7.5,
+      "cached_input": 0.15,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
@@ -123,5 +123,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-11-11T23:25:02+08:00"
+  "updated_at_time": "2026-11-12T06:48:50+08:00"
 }
