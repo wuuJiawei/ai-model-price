@@ -3,7 +3,7 @@
   "name": "APIPlus",
   "website": "https://www.aiapisplus.com/register?aff=hftz",
   "currency": "CNY",
-  "updated_at": "2026-11-16",
+  "updated_at": "2026-11-17",
   "source_url": "https://www.aiapisplus.com/pricing",
   "models": [
     {
@@ -97,5 +97,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-11-16T19:43:51+08:00"
+  "updated_at_time": "2026-11-17T06:18:33+08:00"
 }
