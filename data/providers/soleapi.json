@@ -98,6 +98,13 @@
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
+      "model": "claude-haiku-4-5",
+      "input": 1.5,
+      "output": 7.5,
+      "cached_input": 0.15,
+      "note": "自动采集 · SoleAPI 模型页"
+    },
+    {
       "model": "deepseek-v4-flash",
       "input": 0.65,
       "output": 2.6,
@@ -116,5 +123,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-11-17T12:36:55+08:00"
+  "updated_at_time": "2026-11-17T22:39:06+08:00"
 }
