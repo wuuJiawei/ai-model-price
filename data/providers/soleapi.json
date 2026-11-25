@@ -3,7 +3,7 @@
   "name": "SoleAPI",
   "website": "https://soleapi.com/r/t4zct6y5",
   "currency": "CNY",
-  "updated_at": "2026-11-25",
+  "updated_at": "2026-11-26",
   "source_url": "https://soleapi.com/zh/models",
   "models": [
     {
@@ -22,9 +22,9 @@
     },
     {
       "model": "gpt-5.6-terra",
-      "input": 5,
-      "output": 30,
-      "cached_input": 0.5,
+      "input": 0.6,
+      "output": 3.6,
+      "cached_input": 0.06,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
@@ -123,5 +123,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-11-25T13:29:42+08:00"
+  "updated_at_time": "2026-11-26T01:24:48+08:00"
 }
