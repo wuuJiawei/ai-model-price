@@ -106,16 +106,16 @@
     },
     {
       "model": "deepseek-v4-flash",
-      "input": 0.6,
-      "output": 2.4,
-      "cached_input": 0.012,
+      "input": 1.2,
+      "output": 4.8,
+      "cached_input": 0.024,
       "note": "自动采集 · SoleAPI 模型页"
     },
     {
       "model": "deepseek-v4-pro",
-      "input": 2.7,
-      "output": 8.1,
-      "cached_input": 0.09,
+      "input": 5.4,
+      "output": 16.2,
+      "cached_input": 0.18,
       "note": "自动采集 · SoleAPI 模型页"
     }
   ],
@@ -123,5 +123,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-11-26T01:24:48+08:00"
+  "updated_at_time": "2026-11-26T09:50:20+08:00"
 }
