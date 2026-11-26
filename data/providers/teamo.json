@@ -3,8 +3,8 @@
   "name": "teamo",
   "website": "https://teamorouter.cn/?i=cedb848aa4",
   "currency": "USD",
-  "updated_at": "2026-11-26",
-  "updated_at_time": "2026-11-26T19:04:48+08:00",
+  "updated_at": "2026-11-27",
+  "updated_at_time": "2026-11-27T04:15:59+08:00",
   "source_url": "https://teamorouter.cn/zh#pricing",
   "auto_sync": {
     "enabled": true,
@@ -61,9 +61,9 @@
     },
     {
       "model": "deepseek-v4-pro",
-      "input": 0.5669,
-      "output": 1.7008,
-      "cached_input": 0.0189
+      "input": 0.561,
+      "output": 1.683,
+      "cached_input": 0.0187
     },
     {
       "model": "deepseek-v4-flash",
