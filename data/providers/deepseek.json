@@ -3,7 +3,7 @@
   "name": "DeepSeek 官方",
   "website": "https://platform.deepseek.com/",
   "currency": "CNY",
-  "updated_at": "2026-11-27",
+  "updated_at": "2026-11-28",
   "source_url": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing/",
   "models": [
     {
@@ -25,5 +25,5 @@
     "enabled": true,
     "interval": "hourly"
   },
-  "updated_at_time": "2026-11-27T20:45:22+08:00"
+  "updated_at_time": "2026-11-28T06:06:49+08:00"
 }
